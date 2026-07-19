@@ -3,3 +3,5 @@ data/preprocess/*
 data/encode/*
 .DS_Store
 **/.DS_Store
+mlflow.db
+.vscode/
