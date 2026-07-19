@@ -1,7 +1,14 @@
 # CONFIG FILE FOR 2_encode.py
 
+# file paths to read audio from
+clean_in: data/preprocess/clean_out
+noisy_in: data/preprocess/noisy_out
+
+# output cache
+cache_out: data/encode/cache
+
+# DSP and STFT params:
 target_sr: 16000 # target sample rate for the audio files 16kHz downsample (max audio freq = 8kHz)
 n_fft: 512 # number of samples for the STFT window
 n_hop: 128 # number of samples of overlap
 win: "hann" # DSP window type for the FFT
-eps: 1e-8 # avoid log 0
