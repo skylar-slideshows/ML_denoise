@@ -20,40 +20,28 @@
 #    CSV report summarizing the quality checks for each file
 
 # USAGE:
-#    python src/1_preprocess.py \
-#        --clean-in  [path_to_folder_of_clean_files] \
-#        --noisy-in  [path_to_folder_of_noisy_files] \
-#        --clean-out [path_to_output_folder_for_clean_files] \
-#        --noisy-out [path_to_output_folder_for_noisy_files] \
-#        --report    [path_to_save_report_csv]/report.csv
+#    python src/1_preprocess.py
 
 ############################################################
 
 
-import mlflow
 import os
-import sys
+import yaml
 import shutil
 import numpy as np
 import soundfile as sf
 import csv
-import argparse
 
-mlflow.set_tracking_uri("http://localhost:5000")
+SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
+CONFIG_PATH = os.path.join(SCRIPT_DIR, "..", "config", "1_preprocess.yaml")
+  
+def load_config(path):
+    if not os.path.isfile(path):
+        raise FileNotFoundError("Config file not found")
+    with open(path, "r") as fh:
+        return yaml.safe_load(fh)
 
-
-# FILE FILTERING CONFIG:
-MIN_DURATION = 1.0 # minimum file duration in seconds
-MIN_DBFS = -40.0 # minimum signal level in decibels full scale
-CLIP_DBFS = -0.1 # maximum signal level before flagging as clipping
-CLIP_FRAC = 0.001 # maximum fraction of samples allowed to exceed CLIP_DBFS
-MAX_DC_OFFSET = 0.05 # maximum allowed DC offset in the signal
-EXPECTED_CHANNELS = 1 # expected number of audio channels (mono)
-EXPECTED_SR = 48000 # expected sample rate of the audio files 48kHz
-
-# which flags cause a file (and therefore its whole pair) to be dropped.
-DROP_FLAGS = {"short", "quiet", "clipping", "offset", "bad_sr"}
-
+    
 
 ############################################################
 
@@ -68,7 +56,7 @@ def dbfs(x):
 
 
 # flag_issues: filepath -> flags, dictionary of file metadata
-def flag_issues(path):
+def flag_issues(path, cfg):
 
     # read audio file as an array of samples
     x, sr = sf.read(path, always_2d=True)
@@ -76,16 +64,16 @@ def flag_issues(path):
     flags = []
 
     # flag if sample rate is not as expected
-    if sr != EXPECTED_SR:
+    if sr != cfg["expected_sr"]:
         flags.append("bad_sr")
 
     # flag if file is not mono (rows > 1) - does not drop the file
-    if x.shape[1] != EXPECTED_CHANNELS:
+    if x.shape[1] != cfg["expected_channels"]:
         flags.append(f"channels={x.shape[1]}")
 
     # flag short if the duration is below the minimum threshold
     duration = x.shape[0] / sr
-    if duration < MIN_DURATION:
+    if duration < cfg["min_duration"]:
         flags.append("short")
 
     # mono for level checks
@@ -94,7 +82,7 @@ def flag_issues(path):
     # flag quiet if the RMS level is below the minimum threshold
     rms = np.sqrt(np.mean(mono**2))
     rms_db = dbfs(rms)
-    if rms_db < MIN_DBFS:
+    if rms_db < cfg["min_dbfs"]:
         flags.append("quiet")
 
     peak = np.max(np.abs(mono))
@@ -102,12 +90,12 @@ def flag_issues(path):
 
     # flag clipping if the peak is above the clipping threshold and the fraction of clipped samples is too high
     peak_db = dbfs(peak)
-    if peak_db > CLIP_DBFS and clip_frac > CLIP_FRAC:
+    if peak_db > cfg["clip_dbfs"] and clip_frac > cfg["clip_frac"]:
         flags.append("clipping")
 
     # flag DC offset if the average of the samples is more than max allowed offset
     dc = float(np.mean(mono))
-    if abs(dc) > MAX_DC_OFFSET:
+    if abs(dc) > cfg["max_dc_offset"]:
         flags.append("offset")
 
     stats = dict(
@@ -127,8 +115,8 @@ def flag_issues(path):
 
 
 # fails: flags -> boolean
-def fails(flags):
-    return any(f in DROP_FLAGS for f in flags)
+def fails(flags, cfg):
+    return any(f in cfg["drop_flags"] for f in flags)
 
 
 ############################################################
@@ -136,22 +124,15 @@ def fails(flags):
  
 def main():
 
-    # parse CLI call
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--clean-in", required=True)
-    ap.add_argument("--noisy-in", required=True)
-    ap.add_argument("--clean-out", required=True)
-    ap.add_argument("--noisy-out", required=True)
-    ap.add_argument("--report", required=True, default="report.csv")
-    args = ap.parse_args()
+    cfg = load_config(CONFIG_PATH)
  
     # make folders for output files
-    os.makedirs(args.clean_out, exist_ok=True)
-    os.makedirs(args.noisy_out, exist_ok=True)
+    os.makedirs(cfg["clean_out"], exist_ok=True)
+    os.makedirs(cfg["noisy_out"], exist_ok=True)
  
     # make sure clean/noisy pairs for training exist for each file
-    clean_names = {f for f in os.listdir(args.clean_in) if f.lower().endswith(".wav")}
-    noisy_names = {f for f in os.listdir(args.noisy_in) if f.lower().endswith(".wav")}
+    clean_names = {f for f in os.listdir(cfg["clean_in"]) if f.lower().endswith(".wav")}
+    noisy_names = {f for f in os.listdir(cfg["noisy_in"]) if f.lower().endswith(".wav")}
     paired = sorted(clean_names & noisy_names) # names present in both clean and noisy folder
     unpaired = (clean_names ^ noisy_names) # names in only one folder -> excluded
  
@@ -164,12 +145,12 @@ def main():
     drop_reasons = {}
  
     for name in paired:
-        c_path = os.path.join(args.clean_in, name)
-        n_path = os.path.join(args.noisy_in, name)
-        c_flags, c_stats = flag_issues(c_path)
-        n_flags, n_stats = flag_issues(n_path)
+        c_path = os.path.join(cfg["clean_in"], name)
+        n_path = os.path.join(cfg["noisy_in"], name)
+        c_flags, c_stats = flag_issues(c_path, cfg)
+        n_flags, n_stats = flag_issues(n_path, cfg)
  
-        c_fail, n_fail = fails(c_flags), fails(n_flags)
+        c_fail, n_fail = fails(c_flags, cfg), fails(n_flags, cfg)
         pair_ok = not (c_fail or n_fail)
  
         report_rows.append(dict(set="clean", file=name, kept=pair_ok,
@@ -178,13 +159,13 @@ def main():
                                 flags="|".join(n_flags), **n_stats))
  
         if pair_ok:
-            shutil.copy2(c_path, os.path.join(args.clean_out, name))
-            shutil.copy2(n_path, os.path.join(args.noisy_out, name))
+            shutil.copy2(c_path, os.path.join(cfg["clean_out"], name))
+            shutil.copy2(n_path, os.path.join(cfg["noisy_out"], name))
             kept += 1
         else:
             dropped += 1
             # tally why (union of drop-flags from either file)
-            reasons = {f for f in (c_flags + n_flags) if f in DROP_FLAGS}
+            reasons = {f for f in (c_flags + n_flags) if f in cfg["drop_flags"]}
             for r in reasons:
                 drop_reasons[r] = drop_reasons.get(r, 0) + 1
  
@@ -192,7 +173,7 @@ def main():
     if report_rows:
         fields = ["set", "file", "kept", "flags", "sr", "channels",
                   "duration_s", "rms_dbfs", "peak_dbfs", "dc_offset", "clip_frac"]
-        with open(args.report, "w", newline="") as fh:
+        with open(cfg["report"], "w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=fields)
             w.writeheader()
             w.writerows(report_rows)
@@ -207,8 +188,8 @@ def main():
         print("Drop reasons (pairs affected):")
         for r, c in sorted(drop_reasons.items(), key=lambda kv: -kv[1]):
             print(f"    {r:12s}: {c}")
-    print(f"\nCopied to:\n  {args.clean_out}\n  {args.noisy_out}")
-    print(f"Report: {args.report}")
+    print(f"\nCopied to:\n  {cfg['clean_out']}\n  {cfg['noisy_out']}")
+    print(f"Report: {cfg['report']}")
 
 
 if __name__ == "__main__":

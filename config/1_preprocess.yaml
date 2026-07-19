@@ -1,0 +1,25 @@
+# CONFIG FILE FOR 1_preprocess.py
+
+# File paths to read and save
+clean_in: data/raw/clean_trainset_28spk_wav
+noisy_in: data/raw/noisy_trainset_28spk_wav
+clean_out: data/preprocess/clean_out
+noisy_out: data/preprocess/noisy_out
+report: data/preprocess/report.csv
+
+# File thresholds
+min_duration: 1.0 # minimum file duration in seconds
+min_dbfs: -40.0 # minimum signal level in decibels full scale
+clip_dbfs: -0.1 # maximum signal level before flagging as clipping
+clip_frac: 0.001 # maximum fraction of samples allowed to exceed CLIP_DBFS
+max_dc_offset: 0.05 # maximum allowed DC offset in the signal
+expected_channels: 1 # expected number of audio channels (mono)
+expected_sr: 48000 # expected sample rate of the audio files 48kHz
+
+# which flags cause a file (and therefore its whole pair) to be dropped.
+drop_flags:
+ - short
+ - quiet
+ - clipping
+ - offset
+ - bad_sr
