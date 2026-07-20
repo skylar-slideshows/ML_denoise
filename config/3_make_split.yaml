@@ -1,0 +1,11 @@
+# CONFIG FILE FOR 3_make_split.py
+
+# cache folder to read front
+cache_out: data/encode/cache
+
+# settings for making the train/validation split
+n_val_speakers: 4
+split_seed: 42
+
+# folder to save the text files containing the train/validation split
+split_out: data/encode/split

@@ -8,6 +8,9 @@
 \usepackage{amsmath}
 \usepackage{float}
 
+\usepackage{hyperref}
+\usepackage{setspace}
+
 
 % - Header/Footer Configuration -
 \pagestyle{fancy}
@@ -16,18 +19,103 @@
 \fancyhead[R]{Skylar Denno} % Right header (page number)
 \renewcommand{\headrulewidth}{0.4pt} % Line below header
 
+\onehalfspacing
+
 \begin{document}
 
 \section{Project Information}
 
+\noindent \textbf{Project Title:} Speech Recording Denoising with Neural Networks
+
+\noindent\textbf{Team Members:} Skylar Denno (only)
+
+\noindent\textbf{GitHub Link:} https://github.com/skylar-slideshows/ML\_denoise
+
+
 \section{Dataset Summary}
+
+\noindent \textbf{Dataset Name:} Noisy speech database for training speech enhancement algorithms and TTS models (28 speaker trainset and noisy testset)
+
+\noindent \textbf{Dataset Source:} University of Edinburgh: DataShare, School of Informatics, Centre for Speech Technology Research (CSTR)
+
+\noindent \textbf{Dataset Link:} https://doi.org/10.7488/ds/2117 
+
+\noindent \textbf{Number of Files:} 11,572 (pairs of audio files: one clean, one with noise)
+
+\noindent \textbf{Number of Samples:} The total number of short-time Fourier transform (STFT) frames across all the audio files. Each frame is 512 audio samples long (32ms each at the training sample rate of 16kHz).
+
+\noindent \textbf{Target:} Parameters (values on each of the 257 frequency bins for the spectral mask to filter out) per frame of audio.
 
 \section{Data Preprocessing}
 
 
-\section{Machine Learning Model}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{ideal.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{unpaired.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{silence.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{silence2.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{clip.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{clip2.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{short.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{short2.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
+
+\section{Choice of Machine Learning Model}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{encode.png}
+    \caption{A descriptive caption for my image.}
+    \label{fig:mypicture}
+\end{figure}
 
 \section{Research Questions}
-
 
 \end{document}
