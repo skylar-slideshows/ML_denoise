@@ -46,7 +46,7 @@ def speaker_of(filename):
 
 
 def make_split(cfg, cache_dir, files):
-    n_val_speakers = cfg.get("n_val_speakers", 2)
+    n_val_speakers = cfg.get("n_val_speakers", 4)
     seed = cfg.get("split_seed", 42)
 
     # group filenames by speaker
@@ -90,12 +90,13 @@ def make_split(cfg, cache_dir, files):
 def main():
     cfg = load_config(CONFIG_PATH)
     cache_dir = cfg["cache_out"]
+    split_dir = cfg["split_out"]
     # list the cache once, shared by both phases
     files = sorted(f for f in os.listdir(cache_dir)
                    if f.endswith(".npz") and not f.startswith("_"))
 
     files = [f for f in files]
-    make_split(cfg, cache_dir, files)
+    make_split(cfg, split_dir, files)
 
 
 if __name__ == "__main__":
