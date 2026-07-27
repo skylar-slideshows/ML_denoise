@@ -232,6 +232,9 @@ def run_epoch(model, loader, optimizer, device, grad_clip=None):
             running += float(loss.item())
             n_batches += 1
 
+            if n_batches % 50 == 0:
+                print(f"Processed {n_batches} batches, running loss: {running / max(n_batches, 1)}")
+
     return running / max(n_batches, 1)
 
 
