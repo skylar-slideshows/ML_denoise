@@ -72,29 +72,6 @@ PESQ estimates perceived speech quality using a standardized objective metric de
 
 Although the training software also reports threshold-based Accuracy, F1-score, and ROC-AUC values by converting spectrogram magnitudes into binary decisions, these metrics are used only as auxiliary diagnostics. Because the network predicts continuous-valued spectrogram magnitudes rather than discrete classes, regression and speech-quality metrics provide a more meaningful evaluation of denoising performance.
 
-\subsection{Experimental Results}
-
-Table~\ref{tab:results} summarizes the performance of the trained LSTM model on the training, validation, and test datasets.
-
-\begin{table}[h]
-\centering
-\caption{Performance of the trained LSTM speech denoising model.}
-\label{tab:results}
-\begin{tabular}{lccc}
-\hline
-\textbf{Metric} & \textbf{Training} & \textbf{Validation} & \textbf{Test} \\
-\hline
-MSE & & & \\
-$R^2$ & & & \\
-SI-SDR (dB) & & & \\
-STOI & & & \\
-PESQ & & & \\
-\hline
-\end{tabular}
-\end{table}
-
-The final evaluation considers both reconstruction accuracy and perceptual speech quality. While MSE and $R^2$ measure how accurately the model predicts the clean spectrogram, SI-SDR, STOI, and PESQ better reflect the quality and intelligibility of the reconstructed speech. Reporting multiple complementary metrics provides a more comprehensive assessment of model performance than relying on a single evaluation measure.
-
 
 \section{Hyperparameter Tuning}
 
@@ -104,29 +81,7 @@ The LSTM architecture contains several hyperparameters that influence both the c
 
 The objective of the search was to identify the parameter combination that minimized the validation Mean Squared Error (MSE), although alternative objective metrics such as $R^2$, SI-SDR, STOI, or PESQ could also be selected within the training framework. After evaluating all candidate parameter combinations, the configuration with the best validation performance was selected and retrained using the complete training schedule.
 
-Table~\ref{tab:tuning} summarizes the hyperparameters explored during the tuning process.
-
-	\begin{table}[h]
-	\centering
-\caption{Hyperparameter search space.}
-\label{tab:tuning}
-\begin{tabular}{lc}
-\hline
-
-Hyperparameter & Values Tested \\
-
-\hline
-Hidden Size & ... \\
-Number of LSTM Layers & ... \\
-Dropout Probability & ... \\
-Learning Rate & ... \\
-Weight Decay & ... \\
-	\hline
-	\end{tabular}
-
-\end{table}
-
-Table~\ref{tab:tuning_results} compares the performance of the initial model and the final tuned model.
+Table 1 compares the performance of the initial model and the final tuned model.
 
 	\begin{table}[h]
 \centering
@@ -137,10 +92,11 @@ Table~\ref{tab:tuning_results} compares the performance of the initial model and
 Metric & Before Tuning & After Tuning \\
 \hline
 
-MSE & & \\
-SI-SDR & & \\
-STOI & & \\
-PESQ & & \\
+Validation Loss & 0.00924 & 0.004873 \\
+MSE & 0.000036 & 0.000019 \\
+Accuracy & 0.999544 &0.999602 \\
+F1-score & $9.26 * 10^{-8}$ & 0 (below fl. point limit) \\
+ROC\_AUC & 0.903583 & 0.924252 \\ 
 \hline
 	\end{tabular}
 \end{table}
