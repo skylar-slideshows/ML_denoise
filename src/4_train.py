@@ -21,32 +21,23 @@
 import os
 import argparse
 import itertools
-import importlib
+import csv
 import numpy as np
 import random
 import yaml
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from scipy.signal import istft as scipy_istft
 from torch.utils.data import Dataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence, pad_packed_sequence
 
+# for the confusion matrix plotter / exporter (optional)
 try:
-    pesq_module = importlib.import_module("pesq")
-    pesq_fn = getattr(pesq_module, "pesq", None)
-    HAS_PESQ = pesq_fn is not None
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
 except Exception:
-    pesq_fn = None
-    HAS_PESQ = False
-
-try:
-    pystoi_module = importlib.import_module("pystoi")
-    stoi_fn = getattr(pystoi_module, "stoi", None)
-    HAS_STOI = stoi_fn is not None
-except Exception:
-    stoi_fn = None
-    HAS_STOI = False
+    plt = None
+    HAS_MATPLOTLIB = False
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(SCRIPT_DIR, "..", "config", "4_train.yaml")
@@ -131,15 +122,11 @@ class SpectrogramDataset(Dataset):
             end = start + self.max_frames
             noisy_mag = noisy_mag[start:end]
             clean_mag = clean_mag[start:end]
-            noisy_stft = noisy_stft[:, start:end]
-            clean_stft = clean_stft[:, start:end]
 
         return {
             "x": torch.from_numpy(noisy_mag),
             "y": torch.from_numpy(clean_mag),
             "length": noisy_mag.shape[0],
-            "noisy_phase": np.angle(noisy_stft).T.astype(np.float32),
-            "clean_stft": clean_stft.T.astype(np.complex64),
         }
 
 ############################################################
@@ -178,8 +165,6 @@ def collate_batch(batch):
     xs = [item["x"] for item in batch]
     ys = [item["y"] for item in batch]
     lengths = torch.tensor([item["length"] for item in batch], dtype=torch.long)
-    noisy_phase = [item["noisy_phase"] for item in batch]
-    clean_stft = [item["clean_stft"] for item in batch]
 
     x_padded = pad_sequence(xs, batch_first=True)
     y_padded = pad_sequence(ys, batch_first=True)
@@ -188,8 +173,6 @@ def collate_batch(batch):
         "x": x_padded,
         "y": y_padded,
         "lengths": lengths,
-        "noisy_phase": noisy_phase,
-        "clean_stft": clean_stft,
     }
 
 
@@ -231,39 +214,6 @@ def compute_binary_roc_auc(labels, scores):
     return float(np.trapz(tpr, fpr))
 
 
-def stft_to_waveform(stft_ft, stft_params):
-    _, wav = scipy_istft(
-        stft_ft,
-        fs=stft_params["target_sr"],
-        window=stft_params["win"],
-        nperseg=stft_params["n_fft"],
-        noverlap=stft_params["n_fft"] - stft_params["n_hop"],
-        nfft=stft_params["n_fft"],
-        input_onesided=True,
-        boundary=True,
-    )
-    return wav.astype(np.float32)
-
-
-def compute_si_sdr(reference, estimate, eps=1e-8):
-    ref = reference.astype(np.float64)
-    est = estimate.astype(np.float64)
-
-    ref = ref - ref.mean()
-    est = est - est.mean()
-
-    ref_energy = np.sum(ref * ref) + eps
-    projection = (np.sum(est * ref) / ref_energy) * ref
-    noise = est - projection
-
-    ratio = (np.sum(projection * projection) + eps) / (np.sum(noise * noise) + eps)
-    return float(10.0 * np.log10(ratio))
-
-
-def average_or_nan(values):
-    return float(np.mean(values)) if values else float("nan")
-
-
 def format_metrics(metrics):
     def _fmt(value):
         if value is None or np.isnan(value):
@@ -276,11 +226,69 @@ def format_metrics(metrics):
         f"r2={_fmt(metrics.get('r2'))}, "
         f"acc={_fmt(metrics.get('accuracy'))}, "
         f"f1={_fmt(metrics.get('f1'))}, "
-        f"roc_auc={_fmt(metrics.get('roc_auc'))}, "
-        f"pesq={_fmt(metrics.get('pesq'))}, "
-        f"stoi={_fmt(metrics.get('stoi'))}, "
-        f"si_sdr={_fmt(metrics.get('si_sdr'))}"
+        f"roc_auc={_fmt(metrics.get('roc_auc'))}"
     )
+
+
+# plot the confusion matrix with the most recent validation values
+# and save it to png
+def build_confusion_matrix(metrics, normalized=False):
+    tn = float(metrics.get("tn", 0))
+    fp = float(metrics.get("fp", 0))
+    fn = float(metrics.get("fn", 0))
+    tp = float(metrics.get("tp", 0))
+
+    cm = np.array(
+        [
+            [tn, fp],
+            [fn, tp],
+        ],
+        dtype=np.float64,
+    )
+
+    if normalized:
+        row_sums = cm.sum(axis=1, keepdims=True)
+        cm = np.divide(cm, row_sums, out=np.zeros_like(cm), where=row_sums > 0)
+
+    return cm
+
+
+def save_confusion_matrix_csv(path, matrix):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", newline="") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(["actual/pred", "pred_negative", "pred_positive"])
+        writer.writerow(["actual_negative", matrix[0, 0], matrix[0, 1]])
+        writer.writerow(["actual_positive", matrix[1, 0], matrix[1, 1]])
+
+
+def save_confusion_matrix_png(path, matrix, title, normalized=False):
+    if not HAS_MATPLOTLIB:
+        return False
+
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    fig, ax = plt.subplots(figsize=(5, 4))
+    im = ax.imshow(matrix, cmap="Blues")
+    fig.colorbar(im, ax=ax)
+
+    ax.set_xticks([0, 1])
+    ax.set_yticks([0, 1])
+    ax.set_xticklabels(["Pred Neg", "Pred Pos"])
+    ax.set_yticklabels(["Actual Neg", "Actual Pos"])
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("Actual")
+    ax.set_title(title)
+
+    for i in range(2):
+        for j in range(2):
+            value = matrix[i, j]
+            text = f"{value:.3f}" if normalized else f"{int(round(value))}"
+            ax.text(j, i, text, ha="center", va="center", color="black")
+
+    fig.tight_layout()
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    return True
 
 
 # instantiate data loaders
@@ -326,11 +334,6 @@ def run_epoch(
     grad_clip=None,
     metric_threshold=0.1,
     metric_max_points=250000,
-    compute_speech_metrics=False,
-    speech_metrics_max_utterances=0,
-    sample_rate=16000,
-    pesq_mode="wb",
-    stft_params=None,
 ):
     is_train = optimizer is not None
     model.train() if is_train else model.eval()
@@ -350,11 +353,6 @@ def run_epoch(
 
     roc_scores = []
     roc_labels = []
-
-    pesq_scores = []
-    stoi_scores = []
-    si_sdr_scores = []
-    speech_eval_count = 0
 
     context = torch.enable_grad() if is_train else torch.no_grad()
     with context:
@@ -408,52 +406,6 @@ def run_epoch(
                     roc_scores.extend(score_np.tolist())
                     roc_labels.extend(label_np.tolist())
 
-                if (
-                    compute_speech_metrics
-                    and stft_params is not None
-                    and speech_eval_count < speech_metrics_max_utterances
-                ):
-                    for sample_idx in range(pred_eval.shape[0]):
-                        if speech_eval_count >= speech_metrics_max_utterances:
-                            break
-
-                        t_len = int(lengths[sample_idx].item())
-                        if t_len <= 1:
-                            continue
-
-                        pred_log_mag_tf = pred_eval[sample_idx, :t_len, :].detach().cpu().numpy()
-                        pred_mag_ft = np.maximum(np.expm1(pred_log_mag_tf).T, 0.0)
-
-                        noisy_phase_tf = batch["noisy_phase"][sample_idx][:t_len, :]
-                        clean_stft_tf = batch["clean_stft"][sample_idx][:t_len, :]
-
-                        z_hat = pred_mag_ft * np.exp(1j * noisy_phase_tf.T)
-                        est_wav = stft_to_waveform(z_hat, stft_params)
-                        ref_wav = stft_to_waveform(clean_stft_tf.T, stft_params)
-
-                        m = min(est_wav.shape[0], ref_wav.shape[0])
-                        if m <= 1:
-                            continue
-
-                        est_wav = est_wav[:m]
-                        ref_wav = ref_wav[:m]
-
-                        si_sdr_scores.append(compute_si_sdr(ref_wav, est_wav))
-
-                        if HAS_STOI:
-                            try:
-                                stoi_scores.append(float(stoi_fn(ref_wav, est_wav, sample_rate, extended=False)))
-                            except Exception:
-                                pass
-
-                        if HAS_PESQ:
-                            try:
-                                pesq_scores.append(float(pesq_fn(sample_rate, ref_wav, est_wav, pesq_mode)))
-                            except Exception:
-                                pass
-
-                        speech_eval_count += 1
-
             running += float(loss.item())
             n_batches += 1
 
@@ -477,9 +429,6 @@ def run_epoch(
         f1 = 2.0 * precision * recall / (precision + recall)
 
     roc_auc = compute_binary_roc_auc(np.array(roc_labels), np.array(roc_scores))
-    pesq_value = average_or_nan(pesq_scores)
-    stoi_value = average_or_nan(stoi_scores)
-    si_sdr_value = average_or_nan(si_sdr_scores)
 
     return {
         "loss": loss,
@@ -488,10 +437,10 @@ def run_epoch(
         "accuracy": accuracy,
         "f1": f1,
         "roc_auc": roc_auc,
-        "pesq": pesq_value,
-        "stoi": stoi_value,
-        "si_sdr": si_sdr_value,
-        "speech_eval_count": speech_eval_count,
+        "tp": tp,
+        "tn": tn,
+        "fp": fp,
+        "fn": fn,
     }
 
 
@@ -500,12 +449,10 @@ def run_epoch(
 
 # Grid search hyperparameter tuning
 
-def checkpoint_value(metrics, objective, lower_is_better):
+def checkpoint_value(metrics, objective):
     if objective in metrics and not np.isnan(metrics[objective]):
         return float(metrics[objective])
-    if lower_is_better:
-        return float("inf")
-    return -float("inf")
+    return float(metrics.get("mse", float("inf")))
 
 
 def build_tuning_trials(cfg):
@@ -574,26 +521,17 @@ def train_with_config(cfg, device, run_label="main"):
     metric_threshold = cfg.get("metric_threshold", 0.1)
     metric_max_points = cfg.get("metric_max_points", 250000)
     checkpoint_metric = cfg.get("checkpoint_metric", "mse")
-    lower_is_better = checkpoint_metric not in {"r2", "accuracy", "f1", "roc_auc", "pesq", "stoi", "si_sdr"}
+    lower_is_better = checkpoint_metric not in {"r2", "accuracy", "f1", "roc_auc"}
 
-    stft_params = {
-        "target_sr": int(cfg.get("target_sr", 16000)),
-        "n_fft": int(cfg.get("n_fft", 512)),
-        "n_hop": int(cfg.get("n_hop", 128)),
-        "win": cfg.get("win", "hann"),
-    }
-    speech_metrics_split = cfg.get("speech_metrics_split", "val")
-    speech_metrics_max_utterances = int(cfg.get("speech_metrics_max_utterances", 0))
-    pesq_mode = cfg.get("pesq_mode", "wb")
+    cm_cfg = cfg.get("confusion_matrix", {})
+    cm_enabled = cm_cfg.get("enabled", True)
+    cm_split = cm_cfg.get("split", "val")
+    cm_save_png = cm_cfg.get("save_png", True)
+    cm_save_normalized = cm_cfg.get("save_normalized", True)
+    cm_dir = os.path.join(out_dir, cm_cfg.get("out_subdir", "confusion_matrix"))
 
-    compute_train_speech = speech_metrics_split in {"train", "both"}
-    compute_val_speech = speech_metrics_split in {"val", "both"}
-
-    if speech_metrics_max_utterances > 0 and (compute_train_speech or compute_val_speech):
-        if not HAS_STOI:
-            print("Warning: STOI metric unavailable. Install pystoi to enable STOI reporting.")
-        if not HAS_PESQ:
-            print("Warning: PESQ metric unavailable. Install pesq to enable PESQ reporting.")
+    if cm_enabled and cm_save_png and not HAS_MATPLOTLIB:
+        print("Warning: matplotlib is not installed. Confusion matrix PNG export is disabled.")
 
     best_value = float("inf") if lower_is_better else -float("inf")
     best_epoch = 0
@@ -614,11 +552,6 @@ def train_with_config(cfg, device, run_label="main"):
             grad_clip=grad_clip,
             metric_threshold=metric_threshold,
             metric_max_points=metric_max_points,
-            compute_speech_metrics=compute_train_speech,
-            speech_metrics_max_utterances=speech_metrics_max_utterances,
-            sample_rate=stft_params["target_sr"],
-            pesq_mode=pesq_mode,
-            stft_params=stft_params,
         )
         val_metrics = run_epoch(
             model,
@@ -627,16 +560,50 @@ def train_with_config(cfg, device, run_label="main"):
             device=device,
             metric_threshold=metric_threshold,
             metric_max_points=metric_max_points,
-            compute_speech_metrics=compute_val_speech,
-            speech_metrics_max_utterances=speech_metrics_max_utterances,
-            sample_rate=stft_params["target_sr"],
-            pesq_mode=pesq_mode,
-            stft_params=stft_params,
         )
 
         print(f"[{run_label}] COMPLETED epoch {epoch} of {epochs}")
         print(f"[{run_label}] TRAIN metrics: {format_metrics(train_metrics)}")
         print(f"[{run_label}] VAL   metrics: {format_metrics(val_metrics)}")
+
+        if cm_enabled:
+            split_to_metrics = {
+                "train": train_metrics,
+                "val": val_metrics,
+            }
+            splits = ["train", "val"] if cm_split == "both" else [cm_split]
+
+            for split_name in splits:
+                if split_name not in split_to_metrics:
+                    continue
+
+                metrics_for_cm = split_to_metrics[split_name]
+                cm_counts = build_confusion_matrix(metrics_for_cm, normalized=False)
+                cm_counts_csv = os.path.join(cm_dir, f"{run_label}_{split_name}_epoch_{epoch:03d}_counts.csv")
+                save_confusion_matrix_csv(cm_counts_csv, cm_counts)
+
+                if cm_save_normalized:
+                    cm_norm = build_confusion_matrix(metrics_for_cm, normalized=True)
+                    cm_norm_csv = os.path.join(cm_dir, f"{run_label}_{split_name}_epoch_{epoch:03d}_normalized.csv")
+                    save_confusion_matrix_csv(cm_norm_csv, cm_norm)
+
+                if cm_save_png:
+                    cm_counts_png = os.path.join(cm_dir, f"{run_label}_{split_name}_epoch_{epoch:03d}_counts.png")
+                    save_confusion_matrix_png(
+                        cm_counts_png,
+                        cm_counts,
+                        title=f"{run_label} {split_name} epoch {epoch} counts",
+                        normalized=False,
+                    )
+                    if cm_save_normalized:
+                        cm_norm = build_confusion_matrix(metrics_for_cm, normalized=True)
+                        cm_norm_png = os.path.join(cm_dir, f"{run_label}_{split_name}_epoch_{epoch:03d}_normalized.png")
+                        save_confusion_matrix_png(
+                            cm_norm_png,
+                            cm_norm,
+                            title=f"{run_label} {split_name} epoch {epoch} normalized",
+                            normalized=True,
+                        )
 
         ckpt_latest = os.path.join(out_dir, "latest.pt")
         torch.save(
@@ -651,7 +618,7 @@ def train_with_config(cfg, device, run_label="main"):
             ckpt_latest,
         )
 
-        current_value = checkpoint_value(val_metrics, checkpoint_metric, lower_is_better)
+        current_value = checkpoint_value(val_metrics, checkpoint_metric)
         improved = (current_value < best_value) if lower_is_better else (current_value > best_value)
         if improved:
             best_value = current_value

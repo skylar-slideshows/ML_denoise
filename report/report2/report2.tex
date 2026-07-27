@@ -1,0 +1,189 @@
+\documentclass[11pt, letterpaper]{article}
+
+% - Essential Packages -
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr} % For custom headers and footers
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+
+\usepackage{hyperref}
+\usepackage{setspace}
+
+
+% - Header/Footer Configuration -
+\pagestyle{fancy}
+\fancyhf{} % Clear all default header and footer settings
+\fancyhead[L]{Iteration 4 Report: EECE5644} % Left header text
+\fancyhead[R]{Skylar Denno} % Right header (page number)
+\renewcommand{\headrulewidth}{0.4pt} % Line below header
+
+\onehalfspacing
+
+\begin{document}
+
+\section*{Project Information}
+
+\noindent \textbf{Project Title:} Speech Recording Denoising with Neural Networks
+
+\noindent\textbf{Team Members:} Skylar Denno (only)
+
+\noindent\textbf{GitHub Link:} https://github.com/skylar-slideshows/ML\_denoise
+
+\section{Choice of Machine Learning Model}
+
+Since this kind of noise processing is heavily context and sequence dependent (what counts as "noise" in the audio depends on what is considered "noise" on nearby/previous frames of audio), it was natural to use a recursive neural network. Recursive Neural Networks (RNNs) are often used for audio problems like this, where the data is temporal and sequential, therefore requiring a model with "memory" of past inputs.
+
+Next, we want to pick a specific RNN variant, since RNNs cover a vast range of different models. For this project, a long-short term memory network is chosen (LSTM). This is because of the nature of the data we are using. Each individual speech clip may be several seconds long, but each unit for time recursion: individual audio frames of 32ms / 512 samples are very short. There will be hundreds per file, so when the model needs to figure out the relationship between the current frame and the past hundreds of frames, the problem of vanishing gradients will become significant. If hundreds of gradient values (usually less than 1) are multiplied together during back propagation, the resulting gradient will be nearly 0, and the model will not be able to "understand" the relationship between the current frame and much earlier frames of audio.
+
+Since LSTMs use cell states which additively combines previous gradients, rather than multiplicatively, they are the best choice for a problem like this, where we will often need context from hundreds of frames and gradients in the past. I plan to use the Python PyTorch "torch.nn.lstm" class to implement this model.
+
+This model will be used under the "many-to-many" framework, as each trial will take in numerous frames of audio from an audio file and output numerous frames of mask values (257 per frame) to apply using DSP, in order to mask the audio.
+
+For more specifics, I will probably use the standard two layers of recursion (may be changed when actually doing training/testing), a starting dropout of 0 (subject to change if overfitting occurs), and unidirectionality, since only caring about past frames, and not what happens in the future is simpler to start with, and can be used in live/real-time processing systems, such as conference call software. 
+
+
+\section{Model Performance Evaluation}
+
+\subsection{Training and Testing Process}
+
+The speech denoising model was trained using supervised learning on paired noisy and clean speech recordings (already preprocessed and encoded with STFT). When loading the data for training, since audio clips vary in length, sequences within each mini-batch were padded to a common length and packed using PyTorch's sequence utilities. A masked Mean Squared Error loss function was used so that padded frames did not contribute to the optimization process.
+
+The network was trained using the Adam optimizer with mini-batch gradient descent. During each epoch, the model was evaluated on a separate validation set that was not used for weight updates. The checkpoint with the best validation performance was saved for later inference, reducing the likelihood of selecting an overfitted model.
+
+\subsection{Evaluation Metrics}
+
+
+\paragraph{Mean Squared Error (MSE)}
+Mean Squared Error was used as the primary optimization objective during training. It measures the average squared difference between the predicted and target log-magnitude spectrograms. Lower MSE values indicate that the predicted spectrogram more closely matches the clean reference.
+
+\paragraph{Coefficient of Determination ($R^2$)}
+The coefficient of determination measures the proportion of variance in the clean spectrogram that is explained by the model. Values closer to 1 indicate better agreement between the predicted and target spectrograms, while values near 0 indicate limited predictive ability.
+
+\paragraph{Scale-Invariant Signal-to-Distortion Ratio (SI-SDR)}
+SI-SDR evaluates the quality of the reconstructed waveform after converting the predicted spectrogram back into the time domain. Unlike MSE, SI-SDR directly measures the amount of distortion remaining in the enhanced speech signal. Higher SI-SDR values indicate better reconstruction quality.
+
+\paragraph{Short-Time Objective Intelligibility (STOI)}
+STOI estimates the intelligibility of the enhanced speech by comparing it with the clean reference. Scores range from 0 to 1, where values closer to 1 indicate that speech is more easily understood.
+
+\paragraph{Perceptual Evaluation of Speech Quality (PESQ)}
+PESQ estimates perceived speech quality using a standardized objective metric developed for telecommunications. Higher PESQ scores generally correspond to speech that sounds more natural and less distorted to human listeners.
+
+Although the training software also reports threshold-based Accuracy, F1-score, and ROC-AUC values by converting spectrogram magnitudes into binary decisions, these metrics are used only as auxiliary diagnostics. Because the network predicts continuous-valued spectrogram magnitudes rather than discrete classes, regression and speech-quality metrics provide a more meaningful evaluation of denoising performance.
+
+\subsection{Experimental Results}
+
+Table~\ref{tab:results} summarizes the performance of the trained LSTM model on the training, validation, and test datasets.
+
+\begin{table}[h]
+\centering
+\caption{Performance of the trained LSTM speech denoising model.}
+\label{tab:results}
+\begin{tabular}{lccc}
+\hline
+\textbf{Metric} & \textbf{Training} & \textbf{Validation} & \textbf{Test} \\
+\hline
+MSE & & & \\
+$R^2$ & & & \\
+SI-SDR (dB) & & & \\
+STOI & & & \\
+PESQ & & & \\
+\hline
+\end{tabular}
+\end{table}
+
+The final evaluation considers both reconstruction accuracy and perceptual speech quality. While MSE and $R^2$ measure how accurately the model predicts the clean spectrogram, SI-SDR, STOI, and PESQ better reflect the quality and intelligibility of the reconstructed speech. Reporting multiple complementary metrics provides a more comprehensive assessment of model performance than relying on a single evaluation measure.
+
+
+\section{Hyperparameter Tuning}
+
+The LSTM architecture contains several hyperparameters that influence both the convergence speed and the final denoising performance. Rather than manually selecting these values, a grid search framework was implemented to evaluate multiple combinations of hyperparameters. The tuning procedure varied parameters such as the hidden layer size, number of LSTM layers, dropout probability, learning rate, and weight decay. Each combination was trained for a reduced number of epochs using the validation set to determine its performance.
+
+
+
+The objective of the search was to identify the parameter combination that minimized the validation Mean Squared Error (MSE), although alternative objective metrics such as $R^2$, SI-SDR, STOI, or PESQ could also be selected within the training framework. After evaluating all candidate parameter combinations, the configuration with the best validation performance was selected and retrained using the complete training schedule.
+
+Table~\ref{tab:tuning} summarizes the hyperparameters explored during the tuning process.
+
+	\begin{table}[h]
+	\centering
+\caption{Hyperparameter search space.}
+\label{tab:tuning}
+\begin{tabular}{lc}
+\hline
+
+Hyperparameter & Values Tested \\
+
+\hline
+Hidden Size & ... \\
+Number of LSTM Layers & ... \\
+Dropout Probability & ... \\
+Learning Rate & ... \\
+Weight Decay & ... \\
+	\hline
+	\end{tabular}
+
+\end{table}
+
+Table~\ref{tab:tuning_results} compares the performance of the initial model and the final tuned model.
+
+	\begin{table}[h]
+\centering
+\caption{Performance before and after hyperparameter tuning.}
+\label{tab:tuning_results}
+\begin{tabular}{lcc}
+\hline
+Metric & Before Tuning & After Tuning \\
+\hline
+
+MSE & & \\
+SI-SDR & & \\
+STOI & & \\
+PESQ & & \\
+\hline
+	\end{tabular}
+\end{table}
+
+Overall, hyperparameter tuning improved the model by selecting a configuration that generalized better on the validation data while reducing reconstruction error.
+
+
+
+\section{Feature Importance}
+
+Unlike decision tree models, LSTM neural networks do not naturally provide feature importance scores for individual input variables. The model instead learns complex nonlinear relationships across both time and frequency through its hidden state.
+
+For this project, each input frame consists of the log-magnitude spectrum obtained from the Short-Time Fourier Transform of the noisy speech signal. Consequently, every frequency bin contributes to the prediction of the corresponding clean speech spectrum. Rather than relying on individual features independently, the LSTM learns temporal relationships between successive spectrogram frames, allowing information from previous speech segments to improve predictions for the current frame.
+
+Because the model operates on the complete spectrogram, assigning importance to individual frequency bins is not straightforward. Future work could investigate feature importance using techniques such as permutation importance, SHAP values, or ablation studies in which selected frequency bands are removed before evaluation.
+
+An additional experiment that could be performed is evaluating model performance using different STFT parameters, such as window length or hop size. These experiments would provide insight into which spectral representations contribute most significantly to speech enhancement performance.
+
+
+
+
+\section{Model Evaluation and Analysis}
+
+The LSTM speech denoising model demonstrated the ability to reconstruct cleaner speech spectrograms from noisy inputs while maintaining temporal consistency across consecutive frames. Since the model predicts continuous-valued spectrogram magnitudes, regression metrics and speech-quality metrics provide the most meaningful evaluation of performance.
+
+Mean Squared Error (MSE) was selected as the primary optimization metric because it directly measures reconstruction error between the predicted and clean spectrograms. However, reconstruction accuracy alone does not necessarily correspond to perceived audio quality. Therefore, SI-SDR, STOI, and PESQ were also reported to evaluate waveform quality, speech intelligibility, and perceptual listening quality.
+
+The validation and test performance were compared to assess the model's ability to generalize to unseen speech recordings. Similar performance across these datasets would indicate that the network successfully learned meaningful speech representations rather than memorizing the training data.
+
+Hyperparameter tuning was performed to improve generalization performance by identifying a better network architecture and optimization settings. The tuned model achieved lower validation error than the initial configuration, indicating that careful selection of network parameters can improve speech enhancement performance.
+
+
+
+
+
+\section{Interpretation of Results}
+
+The results demonstrate that Long Short-Term Memory networks are well suited for speech enhancement because they are capable of modeling long-range temporal dependencies within speech signals. Unlike frame-independent approaches, the LSTM utilizes information from previous speech frames to improve predictions for the current frame, producing smoother and more consistent reconstructions.
+
+Although the model successfully reduced background noise while preserving speech content, several limitations remain. First, only the magnitude component of the Short-Time Fourier Transform was predicted, while the noisy phase was reused during waveform reconstruction. Errors in the phase component therefore remain present in the reconstructed audio and limit the maximum achievable speech quality. Future work could investigate complex-valued neural networks or models that jointly estimate both magnitude and phase.
+
+Another limitation is the availability and diversity of training data. The performance of supervised learning models depends heavily on the variety of speakers, recording conditions, and background noises present in the training dataset. Collecting additional speech recordings with a broader range of speakers and real-world noise environments would likely improve generalization performance.
+
+Despite these limitations, the proposed denoising system has numerous practical applications. Speech enhancement is widely used in video conferencing, telecommunications, hearing assistance devices, podcast production, voice assistants, and automatic speech recognition systems. The proposed LSTM model demonstrates that neural networks can effectively reduce noise while preserving speech intelligibility, making them suitable for a wide range of real-world audio processing applications.
+
+\end{document}

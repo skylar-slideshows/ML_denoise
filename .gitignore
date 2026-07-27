@@ -6,4 +6,3 @@ data/encode/*
 mlflow.db
 .vscode/
 .conda/
-artifacts/*

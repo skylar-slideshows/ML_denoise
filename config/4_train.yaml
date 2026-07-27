@@ -38,6 +38,14 @@ metric_threshold: 0.1
 metric_max_points: 250000
 checkpoint_metric: mse
 
+# Confusion matrix export settings:
+confusion_matrix:
+  enabled: true
+  split: val
+  save_png: true
+  save_normalized: true
+  out_subdir: confusion_matrix
+
 # Waveform metric params for PESQ/STOI/SI-SDR
 # These must match encoding/STFT settings.
 target_sr: 16000
