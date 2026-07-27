@@ -26,7 +26,7 @@ val_split: data/encode/split/val_files.txt
 out_dir: artifacts/train
 
 # Training params:
-epochs: 10
+epochs: 25
 batch_size: 8
 lr: 0.001
 weight_decay: 0.0
@@ -63,6 +63,8 @@ pesq_mode: wb
 hidden_size: 256
 num_layers: 2
 dropout: 0.2
+prediction_target: irm_mask
+mask_max: 1.0
 
 # Grid search params:
 hyperparameter_tuning:

@@ -62,8 +62,10 @@ def parse_args():
 
 # instantiate lstm
 class LSTMDenoiser(nn.Module):
-    def __init__(self, n_freq, hidden_size, num_layers, dropout):
+    def __init__(self, n_freq, hidden_size, num_layers, dropout, prediction_target="direct_mag", mask_max=1.0):
         super().__init__()
+        self.prediction_target = str(prediction_target)
+        self.mask_max = float(mask_max)
         self.lstm = nn.LSTM(
             input_size=n_freq,
             hidden_size=hidden_size,
@@ -72,16 +74,25 @@ class LSTMDenoiser(nn.Module):
             dropout=dropout if num_layers > 1 else 0.0,
             bidirectional=True,
         )
-        self.head = nn.Sequential(
-            nn.Linear(hidden_size * 2, n_freq),
-            nn.Softplus(),
-        )
+        if self.prediction_target == "irm_mask":
+            self.head = nn.Sequential(
+                nn.Linear(hidden_size * 2, n_freq),
+                nn.Sigmoid(),
+            )
+        else:
+            self.head = nn.Sequential(
+                nn.Linear(hidden_size * 2, n_freq),
+                nn.Softplus(),
+            )
 
     def forward(self, x, lengths):
         packed = pack_padded_sequence(x, lengths.cpu(), batch_first=True, enforce_sorted=False)
         packed_out, _ = self.lstm(packed)
         out, _ = pad_packed_sequence(packed_out, batch_first=True)
-        return self.head(out)
+        out = self.head(out)
+        if self.prediction_target == "irm_mask":
+            out = out * self.mask_max
+        return out
 
 
 # load the user's wav file and resample it if needed
@@ -156,23 +167,27 @@ def load_model(checkpoint_path, device):
     hidden_size = int(train_cfg.get("hidden_size", hidden_size_inferred))
     num_layers = int(train_cfg.get("num_layers", num_layers_inferred))
     dropout = float(train_cfg.get("dropout", 0.0))
+    mask_max = float(train_cfg.get("mask_max", 1.0))
+    prediction_target = train_cfg.get("prediction_target", "direct_mag")
 
     model = LSTMDenoiser(
         n_freq=n_freq,
         hidden_size=hidden_size,
         num_layers=num_layers,
         dropout=dropout,
+        prediction_target=prediction_target,
+        mask_max=mask_max,
     ).to(device)
 
     model.load_state_dict(ckpt["model_state_dict"], strict=True)
     model.eval()
-    return model
+    return model, prediction_target
 
 
 ############################################################
 
 
-def denoise_waveform(model, noisy_wave, cfg, device):
+def denoise_waveform(model, noisy_wave, cfg, device, prediction_target="direct_mag"):
     peak = float(np.max(np.abs(noisy_wave)) + 1e-8)
     gain = 1.0 / peak
     noisy_norm = noisy_wave * gain
@@ -186,10 +201,14 @@ def denoise_waveform(model, noisy_wave, cfg, device):
     lengths = torch.tensor([t_len], dtype=torch.long, device=device)
 
     with torch.no_grad():
-        pred_log_mag = model(x, lengths)[0, :t_len, :].cpu().numpy().T
+        pred_out = model(x, lengths)[0, :t_len, :].cpu().numpy().T
 
-    pred_mag = np.expm1(pred_log_mag).astype(np.float32)
-    pred_mag = np.maximum(pred_mag, 0.0)
+    if prediction_target == "irm_mask":
+        noisy_mag = np.abs(z_noisy).astype(np.float32)
+        pred_mag = pred_out.astype(np.float32) * noisy_mag
+    else:
+        pred_mag = np.expm1(pred_out).astype(np.float32)
+        pred_mag = np.maximum(pred_mag, 0.0)
 
     noisy_phase = np.angle(z_noisy)
     z_hat = pred_mag * np.exp(1j * noisy_phase)
@@ -234,8 +253,8 @@ def main():
     print(f"Checkpoint: {checkpoint}")
 
     noisy = load_mono_resampled(input_wav, cfg["target_sr"])
-    model = load_model(checkpoint, device)
-    denoised = denoise_waveform(model, noisy, cfg, device)
+    model, prediction_target = load_model(checkpoint, device)
+    denoised = denoise_waveform(model, noisy, cfg, device, prediction_target=prediction_target)
 
     os.makedirs(os.path.dirname(output_wav), exist_ok=True)
     sf.write(output_wav, denoised, cfg["target_sr"])

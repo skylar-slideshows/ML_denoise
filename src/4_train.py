@@ -83,6 +83,7 @@ def parse_args():
 
 ############################################################
 
+
 # CLASS: For loading sequences from the cached STFT NPZ files (/data/encode/cache)
 class SpectrogramDataset(Dataset):
     
@@ -110,31 +111,36 @@ class SpectrogramDataset(Dataset):
         noisy_stft = data["noisy_stft"]
         clean_stft = data["clean_stft"]
 
-        # model takes [T, F]: log-magnitude spectrums
-        noisy_mag = np.log1p(np.abs(noisy_stft)).T.astype(np.float32)
-        clean_mag = np.log1p(np.abs(clean_stft)).T.astype(np.float32)
+        # Model input is log-magnitude [T, F], but training loss is on linear magnitude.
+        noisy_mag_lin = np.abs(noisy_stft).T.astype(np.float32)
+        clean_mag_lin = np.abs(clean_stft).T.astype(np.float32)
+        noisy_log_mag = np.log1p(noisy_mag_lin).astype(np.float32)
 
-        if self.max_frames is not None and noisy_mag.shape[0] > self.max_frames:
+        if self.max_frames is not None and noisy_log_mag.shape[0] > self.max_frames:
             if self.random_crop:
-                start = np.random.randint(0, noisy_mag.shape[0] - self.max_frames + 1)
+                start = np.random.randint(0, noisy_log_mag.shape[0] - self.max_frames + 1)
             else:
                 start = 0
             end = start + self.max_frames
-            noisy_mag = noisy_mag[start:end]
-            clean_mag = clean_mag[start:end]
+            noisy_log_mag = noisy_log_mag[start:end]
+            noisy_mag_lin = noisy_mag_lin[start:end]
+            clean_mag_lin = clean_mag_lin[start:end]
 
         return {
-            "x": torch.from_numpy(noisy_mag),
-            "y": torch.from_numpy(clean_mag),
-            "length": noisy_mag.shape[0],
+            "x": torch.from_numpy(noisy_log_mag),
+            "noisy_mag": torch.from_numpy(noisy_mag_lin),
+            "clean_mag": torch.from_numpy(clean_mag_lin),
+            "length": noisy_log_mag.shape[0],
         }
 
 ############################################################
 
 # CLASS: for instantiating the LSTMs 
 class LSTMDenoiser(nn.Module):
-    def __init__(self, n_freq, hidden_size, num_layers, dropout):
+    def __init__(self, n_freq, hidden_size, num_layers, dropout, prediction_target="direct_mag", mask_max=1.0):
         super().__init__()
+        self.prediction_target = str(prediction_target)
+        self.mask_max = float(mask_max)
         self.lstm = nn.LSTM(
             input_size=n_freq,
             hidden_size=hidden_size,
@@ -143,16 +149,25 @@ class LSTMDenoiser(nn.Module):
             dropout=dropout if num_layers > 1 else 0.0,
             bidirectional=True,
         )
-        self.head = nn.Sequential(
-            nn.Linear(hidden_size * 2, n_freq),
-            nn.Softplus(),
-        )
+        if self.prediction_target == "irm_mask":
+            self.head = nn.Sequential(
+                nn.Linear(hidden_size * 2, n_freq),
+                nn.Sigmoid(),
+            )
+        else:
+            self.head = nn.Sequential(
+                nn.Linear(hidden_size * 2, n_freq),
+                nn.Softplus(),
+            )
 
     def forward(self, x, lengths):
         packed = pack_padded_sequence(x, lengths.cpu(), batch_first=True, enforce_sorted=False)
         packed_out, _ = self.lstm(packed)
         out, _ = pad_packed_sequence(packed_out, batch_first=True)
-        return self.head(out)
+        out = self.head(out)
+        if self.prediction_target == "irm_mask":
+            out = out * self.mask_max
+        return out
 
 
 ############################################################
@@ -163,15 +178,18 @@ class LSTMDenoiser(nn.Module):
 # batched tensor - need to pad STFT sequences to the same length.
 def collate_batch(batch):
     xs = [item["x"] for item in batch]
-    ys = [item["y"] for item in batch]
+    noisy_mags = [item["noisy_mag"] for item in batch]
+    clean_mags = [item["clean_mag"] for item in batch]
     lengths = torch.tensor([item["length"] for item in batch], dtype=torch.long)
 
     x_padded = pad_sequence(xs, batch_first=True)
-    y_padded = pad_sequence(ys, batch_first=True)
+    noisy_mag_padded = pad_sequence(noisy_mags, batch_first=True)
+    clean_mag_padded = pad_sequence(clean_mags, batch_first=True)
 
     return {
         "x": x_padded,
-        "y": y_padded,
+        "noisy_mag": noisy_mag_padded,
+        "clean_mag": clean_mag_padded,
         "lengths": lengths,
     }
 
@@ -358,11 +376,13 @@ def run_epoch(
     with context:
         for batch in loader:
             x = batch["x"].to(device)
-            y = batch["y"].to(device)
+            noisy_mag = batch["noisy_mag"].to(device)
+            clean_mag = batch["clean_mag"].to(device)
             lengths = batch["lengths"].to(device)
 
-            pred = model(x, lengths)
-            loss = masked_mse(pred, y, lengths)
+            pred_mask = model(x, lengths)
+            pred_clean_mag = pred_mask * noisy_mag
+            loss = masked_mse(pred_clean_mag, clean_mag, lengths)
 
             if is_train:
                 optimizer.zero_grad(set_to_none=True)
@@ -372,8 +392,8 @@ def run_epoch(
                 optimizer.step()
 
             with torch.no_grad():
-                pred_eval = pred.detach()
-                y_eval = y.detach()
+                pred_eval = pred_clean_mag.detach()
+                y_eval = clean_mag.detach()
                 valid_mask = make_valid_mask(lengths, pred_eval.shape[1], pred_eval.shape[2])
 
                 valid_pred = pred_eval[valid_mask]
@@ -508,6 +528,8 @@ def train_with_config(cfg, device, run_label="main"):
         hidden_size=cfg.get("hidden_size", 256),
         num_layers=cfg.get("num_layers", 2),
         dropout=cfg.get("dropout", 0.2),
+        prediction_target=cfg.get("prediction_target", "direct_mag"),
+        mask_max=cfg.get("mask_max", 1.0),
     ).to(device)
 
     optimizer = optim.Adam(
@@ -605,18 +627,20 @@ def train_with_config(cfg, device, run_label="main"):
                             normalized=True,
                         )
 
+        checkpoint_data = {
+            "epoch": epoch,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "train_metrics": train_metrics,
+            "val_metrics": val_metrics,
+            "config": cfg,
+        }
+
+        ckpt_epoch = os.path.join(out_dir, f"epoch_{epoch:03d}.pt")
+        torch.save(checkpoint_data, ckpt_epoch)
+
         ckpt_latest = os.path.join(out_dir, "latest.pt")
-        torch.save(
-            {
-                "epoch": epoch,
-                "model_state_dict": model.state_dict(),
-                "optimizer_state_dict": optimizer.state_dict(),
-                "train_metrics": train_metrics,
-                "val_metrics": val_metrics,
-                "config": cfg,
-            },
-            ckpt_latest,
-        )
+        torch.save(checkpoint_data, ckpt_latest)
 
         current_value = checkpoint_value(val_metrics, checkpoint_metric)
         improved = (current_value < best_value) if lower_is_better else (current_value > best_value)
@@ -624,17 +648,7 @@ def train_with_config(cfg, device, run_label="main"):
             best_value = current_value
             best_epoch = epoch
             ckpt_best = os.path.join(out_dir, "best.pt")
-            torch.save(
-                {
-                    "epoch": epoch,
-                    "model_state_dict": model.state_dict(),
-                    "optimizer_state_dict": optimizer.state_dict(),
-                    "train_metrics": train_metrics,
-                    "val_metrics": val_metrics,
-                    "config": cfg,
-                },
-                ckpt_best,
-            )
+            torch.save(checkpoint_data, ckpt_best)
             print(f"[{run_label}] !! NEW BEST checkpoint !!: {ckpt_best}")
 
         print(f"[{run_label}] Checkpoint saved\n")
