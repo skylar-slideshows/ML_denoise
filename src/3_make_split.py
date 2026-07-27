@@ -8,10 +8,10 @@
 
 # 3_make_split.py
 
-# Encode audio files to 1D (mono) arrays of samples.
-# Use short-time Fourier transform (STFT) to convert time-domain
-# signals into frequency-domain representations
-# The ML model will work directly with these.
+# Split dataset into training and validation sets.
+# Please note, the dataset organizers provided a "test" set already, which was not
+# included in preprocessing. We will use it later to test. Therefore,
+# we only need to create training and validation splits.
 
 ############################################################
 

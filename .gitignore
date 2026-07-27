@@ -5,3 +5,5 @@ data/encode/*
 **/.DS_Store
 mlflow.db
 .vscode/
+
+artifacts/*

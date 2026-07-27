@@ -1,0 +1,38 @@
+# CONFIG FILE FOR 4_train.py
+
+# SEED
+seed: 42
+
+# Directories:
+cache_dir: data/encode/cache
+train_split: data/encode/split/train_files.txt
+val_split: data/encode/split/val_files.txt
+out_dir: artifacts/train
+
+# Training params:
+epochs: 30
+batch_size: 8
+lr: 0.001
+weight_decay: 0.0
+grad_clip: 1.0
+num_workers: 0
+
+# Model params:
+hidden_size: 256
+num_layers: 2
+dropout: 0.2
+
+# FAST MODE for developing
+test_mode: true
+
+test_overrides:
+	out_dir: artifacts/train_test
+	epochs: 2
+	batch_size: 4
+	hidden_size: 64
+	num_layers: 1
+	dropout: 0.0
+	max_train_files: 32
+	max_val_files: 8
+	max_frames: 160
+	num_workers: 0
