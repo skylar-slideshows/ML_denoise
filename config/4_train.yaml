@@ -3,27 +3,8 @@
 # SEED
 seed: 42
 
-# Directories:
-cache_dir: data/encode/cache
-train_split: data/encode/split/train_files.txt
-val_split: data/encode/split/val_files.txt
-out_dir: artifacts/train
-
-# Training params:
-epochs: 30
-batch_size: 8
-lr: 0.001
-weight_decay: 0.0
-grad_clip: 1.0
-num_workers: 0
-
-# Model params:
-hidden_size: 256
-num_layers: 2
-dropout: 0.2
-
 # FAST MODE for developing
-test_mode: true
+test_mode: false
 
 test_overrides:
   out_dir: artifacts/train_test
@@ -36,3 +17,56 @@ test_overrides:
   max_val_files: 256
   max_frames: 600
   num_workers: 0
+
+
+# Directories:
+cache_dir: data/encode/cache
+train_split: data/encode/split/train_files.txt
+val_split: data/encode/split/val_files.txt
+out_dir: artifacts/train
+
+# Training params:
+epochs: 10
+batch_size: 8
+lr: 0.001
+weight_decay: 0.0
+grad_clip: 1.0
+num_workers: 0
+
+# Metric reporting params:
+metric_threshold: 0.1
+metric_max_points: 250000
+checkpoint_metric: mse
+
+# Waveform metric params for PESQ/STOI/SI-SDR
+# These must match encoding/STFT settings.
+target_sr: 16000
+n_fft: 512
+n_hop: 128
+win: hann
+
+# speech_metrics_split: none | train | val | both
+# speech_metrics_max_utterances controls epoch-time cost.
+speech_metrics_split: val
+speech_metrics_max_utterances: 8
+pesq_mode: wb
+
+# Model params:
+hidden_size: 256
+num_layers: 2
+dropout: 0.2
+
+# Grid search params:
+hyperparameter_tuning:
+  enabled: false
+  out_dir: artifacts/train_tuning
+  tune_epochs: 3
+  max_trials: 8
+  objective: best_value
+  retrain_best: false
+  retrain_out_dir: artifacts/train_best_from_tuning
+  param_grid:
+    lr: [0.001, 0.0005]
+    hidden_size: [128, 256]
+    num_layers: [1, 2]
+    dropout: [0.0, 0.2]

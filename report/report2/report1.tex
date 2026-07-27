@@ -1,0 +1,127 @@
+\documentclass[11pt, letterpaper]{article}
+
+% - Essential Packages -
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr} % For custom headers and footers
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+
+\usepackage{hyperref}
+\usepackage{setspace}
+
+
+% - Header/Footer Configuration -
+\pagestyle{fancy}
+\fancyhf{} % Clear all default header and footer settings
+\fancyhead[L]{Iteration 4 Report: EECE5644} % Left header text
+\fancyhead[R]{Skylar Denno} % Right header (page number)
+\renewcommand{\headrulewidth}{0.4pt} % Line below header
+
+\onehalfspacing
+
+\begin{document}
+
+\section{Project Information}
+
+\noindent \textbf{Project Title:} Speech Recording Denoising with Neural Networks
+
+\noindent\textbf{Team Members:} Skylar Denno (only)
+
+\noindent\textbf{GitHub Link:} https://github.com/skylar-slideshows/ML\_denoise
+
+\section{Choice of Machine Learning Model}
+
+Since this kind of noise processing is heavily context and sequence dependent (what counts as "noise" in the audio depends on what is considered "noise" on nearby/previous frames of audio), it was natural to use a recursive neural network. Recursive Neural Networks (RNNs) are often used for audio problems like this, where the data is temporal and sequential, therefore requiring a model with "memory" of past inputs.
+
+Next, we want to pick a specific RNN variant, since RNNs cover a vast range of different models. For this project, a long-short term memory network is chosen (LSTM). This is because of the nature of the data we are using. Each individual speech clip may be several seconds long, but each unit for time recursion: individual audio frames of 32ms / 512 samples are very short. There will be hundreds per file, so when the model needs to figure out the relationship between the current frame and the past hundreds of frames, the problem of vanishing gradients will become significant. If hundreds of gradient values (usually less than 1) are multiplied together during back propagation, the resulting gradient will be nearly 0, and the model will not be able to "understand" the relationship between the current frame and much earlier frames of audio.
+
+Since LSTMs use cell states which additively combines previous gradients, rather than multiplicatively, they are the best choice for a problem like this, where we will often need context from hundreds of frames and gradients in the past. I plan to use the Python PyTorch "torch.nn.lstm" class to implement this model.
+
+This model will be used under the "many-to-many" framework, as each trial will take in numerous frames of audio from an audio file and output numerous frames of mask values (257 per frame) to apply using DSP, in order to mask the audio.
+
+For more specifics, I will probably use the standard two layers of recursion (may be changed when actually doing training/testing), a starting dropout of 0 (subject to change if overfitting occurs), and unidirectionality, since only caring about past frames, and not what happens in the future is simpler to start with, and can be used in live/real-time processing systems, such as conference call software. 
+
+\subsection{Evaluation Metrics}
+
+There is still the question of how we will evaluate the model's performance quantitatively, since just "listening" to the test output and saying it sounds less noisy is not enough. Therefore we will evaluate denoising performance using three standard objective metrics, each capturing a different aspect of speech quality.
+
+\subsubsection{PESQ (Perceptual Evaluation of Speech Quality)}
+PESQ estimates the perceptual quality of the enhanced speech,
+i.e.\ how natural and pleasant it sounds to a human listener. It
+compares the enhanced signal against the clean reference using a model
+of human auditory perception, accounting for how the ear responds to
+different frequencies and loudness levels. PESQ scores typically range
+from -0.5 to 4.5, where higher values indicate better perceived
+quality. Because it models perception rather than raw signal error,
+PESQ correlates reasonably well with human opinion scores.
+
+\subsubsection{STOI (Short-Time Objective Intelligibility)}
+STOI measures intelligibility (how understandable the speech
+is) which is distinct from how pleasant it sounds. It compares the
+short-time temporal envelopes of the enhanced and clean signals across
+frequency bands, since intelligibility depends largely on preserving
+these envelope patterns. STOI produces a score between 0 and 1
+(often reported as a percentage), where higher values indicate more
+intelligible speech. A signal can sound distorted yet remain highly
+intelligible, so STOI captures information that PESQ does not. We don't want each filter mask to be very different from frame to frame, producing a garbled, highly varying output that is hard to understand.
+
+\subsubsection{SI-SDR (Scale-Invariant Signal-to-Distortion Ratio)}
+SI-SDR measures raw signal fidelity (how close the enhanced
+waveform is to the clean reference) expressed in decibels. It
+decomposes the estimate into a component aligned with the target and a
+residual distortion component, and reports their ratio. The
+scale-invariant property means the metric is unaffected by overall
+amplitude scaling, so it rewards correct signal shape rather
+than matching loudness. Higher values (in dB) indicate less
+distortion. Unlike PESQ and STOI, SI-SDR is a purely mathematical
+measure and does not model human perception.
+
+\subsubsection{Why Use All Three}
+The three metrics capture complementary aspects: PESQ reflects
+perceptual quality, STOI reflects intelligibility, and SI-SDR reflects
+signal fidelity. A model may improve one while degrading another. For
+example, aggressive noise suppression can raise SI-SDR while
+introducing artifacts that lower PESQ. Reporting all three provides a
+more complete picture of denoising performance than any single metric
+alone.
+
+\newpage
+
+\section{Updated Research Questions}
+
+\begin{enumerate}
+
+	\item How should denoising performance be evaluated, given that objective metrics 
+	(PESQ, STOI, SI-SDR) are proxies for the true goal of human-perceived speech
+	quality and intelligibility? What does each metric capture, and where might they
+	disagree with subjective listening?
+
+    \item How does model performance vary across input signal-to-noise
+    ratios, and does the denoiser provide greater improvement on
+    noisier inputs than on cleaner ones?
+
+    \item Do the STFT parameters (window length and hop
+    size) affect denoising quality, and what trade-off exists between
+    time and frequency resolution for speech enhancement?
+
+    \item How well does the model generalize to new/real-world speakers, given
+    that the training and test sets are speaker-disjoint?
+    
+    \item Does the LSTM bottleneck improve denoising
+    performance compared to a purely convolutional model without
+    temporal modeling, indicating that long-range temporal context
+    contributes to speech enhancement?
+
+    \item How does the number of LSTM layers and hidden units affect
+    denoising quality, and is there a point of diminishing returns
+    where added recurrent capacity no longer improves performance?
+
+    \item Does a bidirectional LSTM (which uses both past and future
+    frames) outperform a unidirectional LSTM (past frames only), and
+    is the quality gain worth the loss of real-time capability?
+
+\end{enumerate}
+
+\end{document}
