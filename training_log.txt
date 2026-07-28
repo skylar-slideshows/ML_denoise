@@ -1,0 +1,936 @@
+Last login: Mon Jul 27 11:40:04 on console
+(base) skylar@Skybook-Pro ~ % cd Desktop/ML_denoise
+(base) skylar@Skybook-Pro ML_denoise % python 4_train.py
+python: can't open file '/Users/skylar/Desktop/ML_denoise/4_train.py': [Errno 2] No such file or directory
+(base) skylar@Skybook-Pro ML_denoise % python src/4_train.py
+#### Initializing training program ####
+
+Using device: mps
+[main] Training batches: 1246, Validation batches: 201
+[main] Output directory: artifacts/train
+[main] EPOCHS: 25
+
+#### Starting training loop ####
+
+[main] STARTING epoch 1 of 25
+Processed 50 batches, running loss: 0.0018850492313504219
+Processed 100 batches, running loss: 0.0018499417952261865
+Processed 150 batches, running loss: 0.0018511052115354686
+Processed 200 batches, running loss: 0.001826966524531599
+Processed 250 batches, running loss: 0.0018127851216122508
+Processed 300 batches, running loss: 0.0017759148407882701
+Processed 350 batches, running loss: 0.001755416673009417
+Processed 400 batches, running loss: 0.001756430017121602
+Processed 450 batches, running loss: 0.0017568768315120705
+Processed 500 batches, running loss: 0.0017433373437379487
+Processed 550 batches, running loss: 0.0017433498254236341
+Processed 600 batches, running loss: 0.0017421606644347776
+Processed 650 batches, running loss: 0.0017261499787519614
+Processed 700 batches, running loss: 0.0017116381099081732
+Processed 750 batches, running loss: 0.0016886004564197112
+Processed 800 batches, running loss: 0.0016631097274512284
+Processed 850 batches, running loss: 0.0016352611344978762
+Processed 900 batches, running loss: 0.0016086299687028966
+Processed 950 batches, running loss: 0.001578298963722773
+Processed 1000 batches, running loss: 0.0015597556687134784
+Processed 1050 batches, running loss: 0.0015274914749066478
+Processed 1100 batches, running loss: 0.0015061153413526798
+Processed 1150 batches, running loss: 0.0014841522411544524
+Processed 1200 batches, running loss: 0.0014613148943317356
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.000798545993748121
+Processed 100 batches, running loss: 0.0007997330275247805
+Processed 150 batches, running loss: 0.0007475283237484594
+Processed 200 batches, running loss: 0.0007602483162190765
+[main] COMPLETED epoch 1 of 25
+[main] TRAIN metrics: loss=0.001438, mse=0.000006, r2=0.859647, acc=0.999751, f1=0.793012, roc_auc=0.999675
+[main] VAL   metrics: loss=0.000759, mse=0.000003, r2=0.917015, acc=0.999896, f1=0.884301, roc_auc=0.999958
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 2 of 25
+Processed 50 batches, running loss: 0.0009379378549056128
+Processed 100 batches, running loss: 0.0008956931758439168
+Processed 150 batches, running loss: 0.0009159771558673431
+Processed 200 batches, running loss: 0.0009157704867538996
+Processed 250 batches, running loss: 0.0009081621944787912
+Processed 300 batches, running loss: 0.0009043602840877914
+Processed 350 batches, running loss: 0.0008921691526276326
+Processed 400 batches, running loss: 0.0008930800179587095
+Processed 450 batches, running loss: 0.0008916663379447224
+Processed 500 batches, running loss: 0.0008905204192560631
+Processed 550 batches, running loss: 0.0008883838770138524
+Processed 600 batches, running loss: 0.0008815802315803012
+Processed 650 batches, running loss: 0.0008829521481171609
+Processed 700 batches, running loss: 0.0008729994266884335
+Processed 750 batches, running loss: 0.0008650781582885732
+Processed 800 batches, running loss: 0.0008663788626654422
+Processed 850 batches, running loss: 0.0008630887789802407
+Processed 900 batches, running loss: 0.0008626060312639715
+Processed 950 batches, running loss: 0.0008635881054827845
+Processed 1000 batches, running loss: 0.0008585163587267743
+Processed 1050 batches, running loss: 0.0008571929942644645
+Processed 1100 batches, running loss: 0.0008613312138980042
+Processed 1150 batches, running loss: 0.0008561821648744745
+Processed 1200 batches, running loss: 0.0008540721536943845
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0006452070426894352
+Processed 100 batches, running loss: 0.0006622652139049024
+Processed 150 batches, running loss: 0.0006205650634365156
+Processed 200 batches, running loss: 0.0006274460992426611
+[main] COMPLETED epoch 2 of 25
+[main] TRAIN metrics: loss=0.000850, mse=0.000003, r2=0.916701, acc=0.999863, f1=0.896230, roc_auc=0.999969
+[main] VAL   metrics: loss=0.000626, mse=0.000002, r2=0.931084, acc=0.999910, f1=0.901356, roc_auc=0.999838
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 3 of 25
+Processed 50 batches, running loss: 0.0007619974343106151
+Processed 100 batches, running loss: 0.0007738785276887938
+Processed 150 batches, running loss: 0.0007759680191520602
+Processed 200 batches, running loss: 0.000766539798642043
+Processed 250 batches, running loss: 0.0007507477911422029
+Processed 300 batches, running loss: 0.0007418957373981054
+Processed 350 batches, running loss: 0.0007341701305787345
+Processed 400 batches, running loss: 0.0007428792486098246
+Processed 450 batches, running loss: 0.0007391414176284646
+Processed 500 batches, running loss: 0.0007298451502283569
+Processed 550 batches, running loss: 0.0007340077075853267
+Processed 600 batches, running loss: 0.0007330544268673596
+Processed 650 batches, running loss: 0.0007310440590551409
+Processed 700 batches, running loss: 0.0007314983282204983
+Processed 750 batches, running loss: 0.0007288707958650776
+Processed 800 batches, running loss: 0.0007278971894083952
+Processed 850 batches, running loss: 0.0007241807845147217
+Processed 900 batches, running loss: 0.0007228001754912031
+Processed 950 batches, running loss: 0.000720868252438346
+Processed 1000 batches, running loss: 0.0007265434822038515
+Processed 1050 batches, running loss: 0.0007269903297336506
+Processed 1100 batches, running loss: 0.0007262984825171191
+Processed 1150 batches, running loss: 0.0007247769355940957
+Processed 1200 batches, running loss: 0.0007234718719579784
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0006155290087917819
+Processed 100 batches, running loss: 0.00061907897805213
+Processed 150 batches, running loss: 0.0005847622669534758
+Processed 200 batches, running loss: 0.0005941655141941737
+[main] COMPLETED epoch 3 of 25
+[main] TRAIN metrics: loss=0.000727, mse=0.000003, r2=0.928718, acc=0.999880, f1=0.910670, roc_auc=0.999988
+[main] VAL   metrics: loss=0.000593, mse=0.000002, r2=0.934969, acc=0.999913, f1=0.904827, roc_auc=0.999949
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 4 of 25
+Processed 50 batches, running loss: 0.0006489571230486036
+Processed 100 batches, running loss: 0.0006477684139099438
+Processed 150 batches, running loss: 0.0006580735339472691
+Processed 200 batches, running loss: 0.0006556168737006374
+Processed 250 batches, running loss: 0.0006586049254983663
+Processed 300 batches, running loss: 0.0006689996756419229
+Processed 350 batches, running loss: 0.0006675778134792511
+Processed 400 batches, running loss: 0.0006597718768171035
+Processed 450 batches, running loss: 0.000655068969160008
+Processed 500 batches, running loss: 0.0006475485471019056
+Processed 550 batches, running loss: 0.0006487573943344283
+Processed 600 batches, running loss: 0.0006485550959526639
+Processed 650 batches, running loss: 0.0006517887088613441
+Processed 700 batches, running loss: 0.0006545958780043293
+Processed 750 batches, running loss: 0.0006535246013469684
+Processed 800 batches, running loss: 0.000657899828383961
+Processed 850 batches, running loss: 0.0006578471193857052
+Processed 900 batches, running loss: 0.0006600605861038073
+Processed 950 batches, running loss: 0.0006579300552900685
+Processed 1000 batches, running loss: 0.0006579204879380995
+Processed 1050 batches, running loss: 0.0006562936905538663
+Processed 1100 batches, running loss: 0.0006553142313549126
+Processed 1150 batches, running loss: 0.0006553954978564592
+Processed 1200 batches, running loss: 0.000653156766796504
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0005500904475047719
+Processed 100 batches, running loss: 0.000552025959113962
+Processed 150 batches, running loss: 0.0005320268911600579
+Processed 200 batches, running loss: 0.0005388594860050944
+[main] COMPLETED epoch 4 of 25
+[main] TRAIN metrics: loss=0.000650, mse=0.000003, r2=0.936338, acc=0.999888, f1=0.917227, roc_auc=0.999964
+[main] VAL   metrics: loss=0.000538, mse=0.000002, r2=0.941079, acc=0.999926, f1=0.922034, roc_auc=0.999972
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 5 of 25
+Processed 50 batches, running loss: 0.000605891008162871
+Processed 100 batches, running loss: 0.0006195267154544126
+Processed 150 batches, running loss: 0.0005962020396448983
+Processed 200 batches, running loss: 0.0006209594149549957
+Processed 250 batches, running loss: 0.0006115070873056539
+Processed 300 batches, running loss: 0.0005907962469306464
+Processed 350 batches, running loss: 0.000579476946898337
+Processed 400 batches, running loss: 0.0005824761192343431
+Processed 450 batches, running loss: 0.0005797079484263021
+Processed 500 batches, running loss: 0.0005766727450827602
+Processed 550 batches, running loss: 0.000575120307542172
+Processed 600 batches, running loss: 0.0005767966072501925
+Processed 650 batches, running loss: 0.000575079567609534
+Processed 700 batches, running loss: 0.0005673398221344022
+Processed 750 batches, running loss: 0.0005659434968838469
+Processed 800 batches, running loss: 0.0005623967798965168
+Processed 850 batches, running loss: 0.0005596697840819081
+Processed 900 batches, running loss: 0.0005662886265296644
+Processed 950 batches, running loss: 0.0005647579174164045
+Processed 1000 batches, running loss: 0.0005601577728666598
+Processed 1050 batches, running loss: 0.0005567259084671691
+Processed 1100 batches, running loss: 0.0005560844176480631
+Processed 1150 batches, running loss: 0.0005544807820621392
+Processed 1200 batches, running loss: 0.0005536234036480892
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0004845611554628704
+Processed 100 batches, running loss: 0.0004781881559028989
+Processed 150 batches, running loss: 0.0004689143672294449
+Processed 200 batches, running loss: 0.00048070419838040833
+[main] COMPLETED epoch 5 of 25
+[main] TRAIN metrics: loss=0.000557, mse=0.000002, r2=0.945441, acc=0.999898, f1=0.925014, roc_auc=0.999922
+[main] VAL   metrics: loss=0.000480, mse=0.000002, r2=0.947373, acc=0.999923, f1=0.917788, roc_auc=0.999964
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 6 of 25
+Processed 50 batches, running loss: 0.0004704982682596892
+Processed 100 batches, running loss: 0.0004840843517740723
+Processed 150 batches, running loss: 0.0005095452300156466
+Processed 200 batches, running loss: 0.0005085879082616884
+Processed 250 batches, running loss: 0.0005131007761228829
+Processed 300 batches, running loss: 0.0005085379251492365
+Processed 350 batches, running loss: 0.0005071384457655118
+Processed 400 batches, running loss: 0.0005128786529530771
+Processed 450 batches, running loss: 0.000516458403726574
+Processed 500 batches, running loss: 0.0005216387076216051
+Processed 550 batches, running loss: 0.0005158260767744982
+Processed 600 batches, running loss: 0.0005171591360825308
+Processed 650 batches, running loss: 0.0005150445273634082
+Processed 700 batches, running loss: 0.0005131287094367768
+Processed 750 batches, running loss: 0.0005120240108323438
+Processed 800 batches, running loss: 0.0005153736481679516
+Processed 850 batches, running loss: 0.0005122921090686064
+Processed 900 batches, running loss: 0.0005106004869756159
+Processed 950 batches, running loss: 0.0005084627287655358
+Processed 1000 batches, running loss: 0.000505296450392052
+Processed 1050 batches, running loss: 0.0005039964405295905
+Processed 1100 batches, running loss: 0.0005033755486246347
+Processed 1150 batches, running loss: 0.0005027717952527936
+Processed 1200 batches, running loss: 0.0005033268088239614
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00048132762021850793
+Processed 100 batches, running loss: 0.0004805278658750467
+Processed 150 batches, running loss: 0.00046784612379269675
+Processed 200 batches, running loss: 0.00047881884886010086
+[main] COMPLETED epoch 6 of 25
+[main] TRAIN metrics: loss=0.000505, mse=0.000002, r2=0.950510, acc=0.999904, f1=0.929681, roc_auc=0.999972
+[main] VAL   metrics: loss=0.000478, mse=0.000002, r2=0.947564, acc=0.999926, f1=0.922155, roc_auc=0.999983
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 7 of 25
+Processed 50 batches, running loss: 0.000503338564740261
+Processed 100 batches, running loss: 0.0004975059408025117
+Processed 150 batches, running loss: 0.000492732764929921
+Processed 200 batches, running loss: 0.0004899350432970096
+Processed 250 batches, running loss: 0.0004942484491039067
+Processed 300 batches, running loss: 0.0004919871502594711
+Processed 350 batches, running loss: 0.0005006977635119775
+Processed 400 batches, running loss: 0.0004972879363413085
+Processed 450 batches, running loss: 0.0004926385885078667
+Processed 500 batches, running loss: 0.0004924872240517289
+Processed 550 batches, running loss: 0.0004881866351140409
+Processed 600 batches, running loss: 0.00048436566483966694
+Processed 650 batches, running loss: 0.0004807473740388209
+Processed 700 batches, running loss: 0.00047511902922581483
+Processed 750 batches, running loss: 0.00047753326443489643
+Processed 800 batches, running loss: 0.00047582516443981146
+Processed 850 batches, running loss: 0.00047280211665030734
+Processed 900 batches, running loss: 0.0004734930777906104
+Processed 950 batches, running loss: 0.00047323305463865643
+Processed 1000 batches, running loss: 0.00047401391309540486
+Processed 1050 batches, running loss: 0.00048073960543704397
+Processed 1100 batches, running loss: 0.0004798879791699371
+Processed 1150 batches, running loss: 0.0004781008196258209
+Processed 1200 batches, running loss: 0.0004767920731622629
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0004409692992339842
+Processed 100 batches, running loss: 0.00044882468137075193
+Processed 150 batches, running loss: 0.0004360438287646199
+Processed 200 batches, running loss: 0.00044577772561751774
+[main] COMPLETED epoch 7 of 25
+[main] TRAIN metrics: loss=0.000477, mse=0.000002, r2=0.953320, acc=0.999906, f1=0.931876, roc_auc=0.999978
+[main] VAL   metrics: loss=0.000445, mse=0.000002, r2=0.951130, acc=0.999926, f1=0.920985, roc_auc=0.999985
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 8 of 25
+Processed 50 batches, running loss: 0.0004160315409535542
+Processed 100 batches, running loss: 0.0004567512052017264
+Processed 150 batches, running loss: 0.0004626760052633472
+Processed 200 batches, running loss: 0.00046841432253131644
+Processed 250 batches, running loss: 0.00048489937104750425
+Processed 300 batches, running loss: 0.00047910476714605463
+Processed 350 batches, running loss: 0.00047865934578502283
+Processed 400 batches, running loss: 0.0004737102942817728
+Processed 450 batches, running loss: 0.00046872873544796475
+Processed 500 batches, running loss: 0.0004669026116898749
+Processed 550 batches, running loss: 0.00046539991670711475
+Processed 600 batches, running loss: 0.00046388642321592975
+Processed 650 batches, running loss: 0.00046178904487393225
+Processed 700 batches, running loss: 0.0004612137935224122
+Processed 750 batches, running loss: 0.00045629943347497224
+Processed 800 batches, running loss: 0.0004517170535200421
+Processed 850 batches, running loss: 0.00044944962506312603
+Processed 900 batches, running loss: 0.00044645422426886703
+Processed 950 batches, running loss: 0.0004463802835380193
+Processed 1000 batches, running loss: 0.00044396295333717716
+Processed 1050 batches, running loss: 0.00044288864192952
+Processed 1100 batches, running loss: 0.00044386715392730284
+Processed 1150 batches, running loss: 0.0004454606738316057
+Processed 1200 batches, running loss: 0.00044550336910712456
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0004048004746437073
+Processed 100 batches, running loss: 0.0004087205267569516
+Processed 150 batches, running loss: 0.00039741405703049774
+Processed 200 batches, running loss: 0.00040514230728149413
+[main] COMPLETED epoch 8 of 25
+[main] TRAIN metrics: loss=0.000448, mse=0.000002, r2=0.956144, acc=0.999909, f1=0.934143, roc_auc=0.999913
+[main] VAL   metrics: loss=0.000404, mse=0.000002, r2=0.955618, acc=0.999931, f1=0.926643, roc_auc=0.999987
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 9 of 25
+Processed 50 batches, running loss: 0.00047122190648224205
+Processed 100 batches, running loss: 0.0004488722069072537
+Processed 150 batches, running loss: 0.00044300050532910975
+Processed 200 batches, running loss: 0.0004478808257408673
+Processed 250 batches, running loss: 0.000442702169821132
+Processed 300 batches, running loss: 0.00043238698582475385
+Processed 350 batches, running loss: 0.0004204100906333354
+Processed 400 batches, running loss: 0.000416900711497874
+Processed 450 batches, running loss: 0.00041598868562788184
+Processed 500 batches, running loss: 0.00042390347708715125
+Processed 550 batches, running loss: 0.000423542201646011
+Processed 600 batches, running loss: 0.00042430804945373286
+Processed 650 batches, running loss: 0.0004273728372264976
+Processed 700 batches, running loss: 0.0004231109586752219
+Processed 750 batches, running loss: 0.00042336148221511395
+Processed 800 batches, running loss: 0.00042469300974516954
+Processed 850 batches, running loss: 0.00042287911458783236
+Processed 900 batches, running loss: 0.00042332847318903076
+Processed 950 batches, running loss: 0.00042405989089227083
+Processed 1000 batches, running loss: 0.00042176669139735166
+Processed 1050 batches, running loss: 0.00042121553627934885
+Processed 1100 batches, running loss: 0.00042144464726416944
+Processed 1150 batches, running loss: 0.000421334033314412
+Processed 1200 batches, running loss: 0.00042177398344089547
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0004208357946481556
+Processed 100 batches, running loss: 0.0004227033129427582
+Processed 150 batches, running loss: 0.00041265994019340724
+Processed 200 batches, running loss: 0.00041794720622419847
+[main] COMPLETED epoch 9 of 25
+[main] TRAIN metrics: loss=0.000423, mse=0.000002, r2=0.958551, acc=0.999911, f1=0.935419, roc_auc=0.999986
+[main] VAL   metrics: loss=0.000417, mse=0.000002, r2=0.954248, acc=0.999931, f1=0.926455, roc_auc=0.999987
+[main] Checkpoint saved
+
+[main] STARTING epoch 10 of 25
+Processed 50 batches, running loss: 0.00036545918934280055
+Processed 100 batches, running loss: 0.0003951327684626449
+Processed 150 batches, running loss: 0.00038090180363118027
+Processed 200 batches, running loss: 0.000409368114778772
+Processed 250 batches, running loss: 0.0004204882410122082
+Processed 300 batches, running loss: 0.0004249335319036618
+Processed 350 batches, running loss: 0.00041966870048781857
+Processed 400 batches, running loss: 0.0004233859146188479
+Processed 450 batches, running loss: 0.0004191783894040984
+Processed 500 batches, running loss: 0.0004145869784260867
+Processed 550 batches, running loss: 0.00041397513791294346
+Processed 600 batches, running loss: 0.0004124879259931428
+Processed 650 batches, running loss: 0.0004128740944053369
+Processed 700 batches, running loss: 0.0004124144657544093
+Processed 750 batches, running loss: 0.00040877930050677
+Processed 800 batches, running loss: 0.0004144812769754935
+Processed 850 batches, running loss: 0.0004132472433454549
+Processed 900 batches, running loss: 0.000410909296373979
+Processed 950 batches, running loss: 0.00040892178012750505
+Processed 1000 batches, running loss: 0.00040807914781180446
+Processed 1050 batches, running loss: 0.0004065597139456908
+Processed 1100 batches, running loss: 0.00040379381861632946
+Processed 1150 batches, running loss: 0.00040364525569400384
+Processed 1200 batches, running loss: 0.0004035178247674291
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00038227592027396896
+Processed 100 batches, running loss: 0.00038048190581321253
+Processed 150 batches, running loss: 0.00037130065538804047
+Processed 200 batches, running loss: 0.00038043777178245366
+[main] COMPLETED epoch 10 of 25
+[main] TRAIN metrics: loss=0.000403, mse=0.000002, r2=0.960417, acc=0.999913, f1=0.936773, roc_auc=0.999989
+[main] VAL   metrics: loss=0.000380, mse=0.000001, r2=0.958284, acc=0.999933, f1=0.929152, roc_auc=0.999977
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 11 of 25
+Processed 50 batches, running loss: 0.00042098916455870496
+Processed 100 batches, running loss: 0.00039993019017856566
+Processed 150 batches, running loss: 0.0003840885617925475
+Processed 200 batches, running loss: 0.00038300713982607703
+Processed 250 batches, running loss: 0.0003781055809231475
+Processed 300 batches, running loss: 0.0003767847527342383
+Processed 350 batches, running loss: 0.0003787879479101061
+Processed 400 batches, running loss: 0.00038094762192486086
+Processed 450 batches, running loss: 0.0003804515109287523
+Processed 500 batches, running loss: 0.0003789259264449356
+Processed 550 batches, running loss: 0.0003835709707478104
+Processed 600 batches, running loss: 0.00038382833652576663
+Processed 650 batches, running loss: 0.00038406079965240606
+Processed 700 batches, running loss: 0.0003827849669635595
+Processed 750 batches, running loss: 0.0003835685748975569
+Processed 800 batches, running loss: 0.0003850881663402106
+Processed 850 batches, running loss: 0.00038574378460693614
+Processed 900 batches, running loss: 0.00038275636856269555
+Processed 950 batches, running loss: 0.00038124124096755525
+Processed 1000 batches, running loss: 0.000385167188665946
+Processed 1050 batches, running loss: 0.0003852662951491463
+Processed 1100 batches, running loss: 0.00038628700395665046
+Processed 1150 batches, running loss: 0.00039323771439502827
+Processed 1200 batches, running loss: 0.0003924650621047476
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0003874945981078781
+Processed 100 batches, running loss: 0.0004065494217502419
+Processed 150 batches, running loss: 0.00039012421456088
+Processed 200 batches, running loss: 0.0003920719627785729
+[main] COMPLETED epoch 11 of 25
+[main] TRAIN metrics: loss=0.000393, mse=0.000002, r2=0.961376, acc=0.999914, f1=0.937756, roc_auc=0.999993
+[main] VAL   metrics: loss=0.000391, mse=0.000002, r2=0.956973, acc=0.999930, f1=0.925217, roc_auc=0.999991
+[main] Checkpoint saved
+
+[main] STARTING epoch 12 of 25
+Processed 50 batches, running loss: 0.00035436456775642003
+Processed 100 batches, running loss: 0.0003659072410664521
+Processed 150 batches, running loss: 0.00038190574501641096
+Processed 200 batches, running loss: 0.0003985792298772139
+Processed 250 batches, running loss: 0.0003960874472395517
+Processed 300 batches, running loss: 0.0003888247311018252
+Processed 350 batches, running loss: 0.00038658821333748553
+Processed 400 batches, running loss: 0.000382001758844126
+Processed 450 batches, running loss: 0.0003800617706535074
+Processed 500 batches, running loss: 0.0003804343145166058
+Processed 550 batches, running loss: 0.00037967501917261293
+Processed 600 batches, running loss: 0.0003771066594345029
+Processed 650 batches, running loss: 0.0003826758341613011
+Processed 700 batches, running loss: 0.0003846079154962873
+Processed 750 batches, running loss: 0.0003832513496745378
+Processed 800 batches, running loss: 0.00037830247048987076
+Processed 850 batches, running loss: 0.0003769049150115975
+Processed 900 batches, running loss: 0.00037900149254710414
+Processed 950 batches, running loss: 0.0003776101957268302
+Processed 1000 batches, running loss: 0.0003760510541978874
+Processed 1050 batches, running loss: 0.00037342375929472926
+Processed 1100 batches, running loss: 0.0003737448423039909
+Processed 1150 batches, running loss: 0.00037396938075645543
+Processed 1200 batches, running loss: 0.0003741880790888293
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00041735964579856953
+Processed 100 batches, running loss: 0.0004128883407247486
+Processed 150 batches, running loss: 0.00040886734626838006
+Processed 200 batches, running loss: 0.0004134319455260993
+[main] COMPLETED epoch 12 of 25
+[main] TRAIN metrics: loss=0.000375, mse=0.000001, r2=0.963248, acc=0.999915, f1=0.938766, roc_auc=0.999992
+[main] VAL   metrics: loss=0.000413, mse=0.000002, r2=0.954642, acc=0.999930, f1=0.924283, roc_auc=0.999980
+[main] Checkpoint saved
+
+[main] STARTING epoch 13 of 25
+Processed 50 batches, running loss: 0.00037202145875198767
+Processed 100 batches, running loss: 0.0003883357672020793
+Processed 150 batches, running loss: 0.0004080818847675497
+Processed 200 batches, running loss: 0.0003928089197870577
+Processed 250 batches, running loss: 0.0003801207793003414
+Processed 300 batches, running loss: 0.00037018452521200135
+Processed 350 batches, running loss: 0.00036955341195737544
+Processed 400 batches, running loss: 0.00036853886022072404
+Processed 450 batches, running loss: 0.00036973452294154817
+Processed 500 batches, running loss: 0.0003751574880006956
+Processed 550 batches, running loss: 0.000374311023717217
+Processed 600 batches, running loss: 0.0003707596020467463
+Processed 650 batches, running loss: 0.0003701156922593677
+Processed 700 batches, running loss: 0.0003657773625309346
+Processed 750 batches, running loss: 0.0003674464596939894
+Processed 800 batches, running loss: 0.00036889560507916033
+Processed 850 batches, running loss: 0.00036698660296251013
+Processed 900 batches, running loss: 0.00036529225964234985
+Processed 950 batches, running loss: 0.0003710051292881345
+Processed 1000 batches, running loss: 0.0003708745272015221
+Processed 1050 batches, running loss: 0.00036913332442054523
+Processed 1100 batches, running loss: 0.0003680698060039008
+Processed 1150 batches, running loss: 0.0003685506517206744
+Processed 1200 batches, running loss: 0.0003683118637794299
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00035632679500849915
+Processed 100 batches, running loss: 0.0003704795360681601
+Processed 150 batches, running loss: 0.000359801382534594
+Processed 200 batches, running loss: 0.0003621110034509911
+[main] COMPLETED epoch 13 of 25
+[main] TRAIN metrics: loss=0.000369, mse=0.000001, r2=0.963863, acc=0.999916, f1=0.939479, roc_auc=0.999951
+[main] VAL   metrics: loss=0.000361, mse=0.000001, r2=0.960281, acc=0.999934, f1=0.929857, roc_auc=0.999986
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 14 of 25
+Processed 50 batches, running loss: 0.0003456587638356723
+Processed 100 batches, running loss: 0.0003372687557566678
+Processed 150 batches, running loss: 0.0003291513540413386
+Processed 200 batches, running loss: 0.0003253199394384865
+Processed 250 batches, running loss: 0.00032448795874370263
+Processed 300 batches, running loss: 0.00032607431123324207
+Processed 350 batches, running loss: 0.000326454791523117
+Processed 400 batches, running loss: 0.00033031364757334813
+Processed 450 batches, running loss: 0.000335447212403071
+Processed 500 batches, running loss: 0.00033285200789396187
+Processed 550 batches, running loss: 0.0003360499887838325
+Processed 600 batches, running loss: 0.0003369473916124358
+Processed 650 batches, running loss: 0.00033852859122607
+Processed 700 batches, running loss: 0.0003391881052396327
+Processed 750 batches, running loss: 0.00033938759673037564
+Processed 800 batches, running loss: 0.00034101245341844333
+Processed 850 batches, running loss: 0.0003430820369890973
+Processed 900 batches, running loss: 0.00034777444024964807
+Processed 950 batches, running loss: 0.0003475754786785202
+Processed 1000 batches, running loss: 0.00034590687718446134
+Processed 1050 batches, running loss: 0.00034605563215639755
+Processed 1100 batches, running loss: 0.0003454755891884402
+Processed 1150 batches, running loss: 0.00034627908623762144
+Processed 1200 batches, running loss: 0.00034804466098648846
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00037015944646555
+Processed 100 batches, running loss: 0.0003685020934062777
+Processed 150 batches, running loss: 0.0003499924544303212
+Processed 200 batches, running loss: 0.00035629291774966985
+[main] COMPLETED epoch 14 of 25
+[main] TRAIN metrics: loss=0.000351, mse=0.000001, r2=0.965540, acc=0.999917, f1=0.940148, roc_auc=0.999623
+[main] VAL   metrics: loss=0.000356, mse=0.000001, r2=0.960862, acc=0.999935, f1=0.931107, roc_auc=0.999977
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 15 of 25
+Processed 50 batches, running loss: 0.0003061851931852289
+Processed 100 batches, running loss: 0.00035884280630853026
+Processed 150 batches, running loss: 0.0003500113856959312
+Processed 200 batches, running loss: 0.00035051821072556777
+Processed 250 batches, running loss: 0.0003468434984970372
+Processed 300 batches, running loss: 0.00034891135338208795
+Processed 350 batches, running loss: 0.00033947919894542015
+Processed 400 batches, running loss: 0.0003389327856712043
+Processed 450 batches, running loss: 0.0003394574045927988
+Processed 500 batches, running loss: 0.0003425465868494939
+Processed 550 batches, running loss: 0.0003425035228164316
+Processed 600 batches, running loss: 0.00033996578662481624
+Processed 650 batches, running loss: 0.0003402209311025217
+Processed 700 batches, running loss: 0.0003401248079691348
+Processed 750 batches, running loss: 0.0003391386320484647
+Processed 800 batches, running loss: 0.0003389266221438447
+Processed 850 batches, running loss: 0.00033760591999881025
+Processed 900 batches, running loss: 0.0003422994255783528
+Processed 950 batches, running loss: 0.00034866384093459743
+Processed 1000 batches, running loss: 0.00035122604716889325
+Processed 1050 batches, running loss: 0.00035416476296155626
+Processed 1100 batches, running loss: 0.00035399573014398234
+Processed 1150 batches, running loss: 0.00035268256531866346
+Processed 1200 batches, running loss: 0.00035201577450303984
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00034816437168046834
+Processed 100 batches, running loss: 0.0003517876073601656
+Processed 150 batches, running loss: 0.0003432917657967967
+Processed 200 batches, running loss: 0.00034782971466484013
+[main] COMPLETED epoch 15 of 25
+[main] TRAIN metrics: loss=0.000353, mse=0.000001, r2=0.965531, acc=0.999917, f1=0.940287, roc_auc=0.999853
+[main] VAL   metrics: loss=0.000347, mse=0.000001, r2=0.961868, acc=0.999935, f1=0.931845, roc_auc=0.999994
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 16 of 25
+Processed 50 batches, running loss: 0.0003326127174659632
+Processed 100 batches, running loss: 0.00033384785092493985
+Processed 150 batches, running loss: 0.0003303344091303491
+Processed 200 batches, running loss: 0.000359282664321654
+Processed 250 batches, running loss: 0.0003490579288918525
+Processed 300 batches, running loss: 0.00034960257214455246
+Processed 350 batches, running loss: 0.00034544862542783706
+Processed 400 batches, running loss: 0.000342533138627914
+Processed 450 batches, running loss: 0.0003398659048737803
+Processed 500 batches, running loss: 0.0003361827257758705
+Processed 550 batches, running loss: 0.00034127185117209925
+Processed 600 batches, running loss: 0.0003392793590683141
+Processed 650 batches, running loss: 0.0003405678780556907
+Processed 700 batches, running loss: 0.0003385007842838864
+Processed 750 batches, running loss: 0.00033714420680189505
+Processed 800 batches, running loss: 0.0003364596568644629
+Processed 850 batches, running loss: 0.00033564290261197397
+Processed 900 batches, running loss: 0.00033270480388536167
+Processed 950 batches, running loss: 0.00033147960762634234
+Processed 1000 batches, running loss: 0.0003338305924626184
+Processed 1050 batches, running loss: 0.00033207154602028565
+Processed 1100 batches, running loss: 0.0003307263863032197
+Processed 1150 batches, running loss: 0.0003307788946815139
+Processed 1200 batches, running loss: 0.0003294745258184169
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0003319083060341654
+Processed 100 batches, running loss: 0.0003439247590358718
+Processed 150 batches, running loss: 0.00033543395991728173
+Processed 200 batches, running loss: 0.00033625324578679284
+[main] COMPLETED epoch 16 of 25
+[main] TRAIN metrics: loss=0.000330, mse=0.000001, r2=0.967755, acc=0.999919, f1=0.941666, roc_auc=0.999996
+[main] VAL   metrics: loss=0.000336, mse=0.000001, r2=0.963117, acc=0.999936, f1=0.931920, roc_auc=0.999987
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 17 of 25
+Processed 50 batches, running loss: 0.0002854395055328496
+Processed 100 batches, running loss: 0.000314790170014021
+Processed 150 batches, running loss: 0.0003160073684315042
+Processed 200 batches, running loss: 0.00032035962569352703
+Processed 250 batches, running loss: 0.0003366158826975152
+Processed 300 batches, running loss: 0.00032848265298525805
+Processed 350 batches, running loss: 0.000330249812000797
+Processed 400 batches, running loss: 0.00032488882319739785
+Processed 450 batches, running loss: 0.0003229062893822427
+Processed 500 batches, running loss: 0.0003229754380736267
+Processed 550 batches, running loss: 0.0003219720944682856
+Processed 600 batches, running loss: 0.00032995703346387016
+Processed 650 batches, running loss: 0.00033259531003960335
+Processed 700 batches, running loss: 0.0003319779458771726
+Processed 750 batches, running loss: 0.0003313030688732397
+Processed 800 batches, running loss: 0.0003326077864312538
+Processed 850 batches, running loss: 0.00033055134699679913
+Processed 900 batches, running loss: 0.0003294713689926236
+Processed 950 batches, running loss: 0.00032801073365446525
+Processed 1000 batches, running loss: 0.0003265959552663844
+Processed 1050 batches, running loss: 0.00032682071367855225
+Processed 1100 batches, running loss: 0.00032687330700520597
+Processed 1150 batches, running loss: 0.0003261385012909001
+Processed 1200 batches, running loss: 0.00032612082082778216
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00033500066740089097
+Processed 100 batches, running loss: 0.0003481764191383263
+Processed 150 batches, running loss: 0.00033530941902427003
+Processed 200 batches, running loss: 0.0003406885272852378
+[main] COMPLETED epoch 17 of 25
+[main] TRAIN metrics: loss=0.000327, mse=0.000001, r2=0.967988, acc=0.999919, f1=0.941839, roc_auc=0.999989
+[main] VAL   metrics: loss=0.000340, mse=0.000001, r2=0.962691, acc=0.999936, f1=0.931521, roc_auc=0.999994
+[main] Checkpoint saved
+
+[main] STARTING epoch 18 of 25
+Processed 50 batches, running loss: 0.00032435065833851694
+Processed 100 batches, running loss: 0.0003232978709274903
+Processed 150 batches, running loss: 0.0003168747097273202
+Processed 200 batches, running loss: 0.00030903786511771614
+Processed 250 batches, running loss: 0.0003039760399842635
+Processed 300 batches, running loss: 0.00031465419349842707
+Processed 350 batches, running loss: 0.00031498090833857924
+Processed 400 batches, running loss: 0.0003241896587314841
+Processed 450 batches, running loss: 0.00032142823130319205
+Processed 500 batches, running loss: 0.00031872020709852223
+Processed 550 batches, running loss: 0.0003206819052601614
+Processed 600 batches, running loss: 0.0003199824413119738
+Processed 650 batches, running loss: 0.00031706316304805045
+Processed 700 batches, running loss: 0.00031500926277658434
+Processed 750 batches, running loss: 0.0003166715774180678
+Processed 800 batches, running loss: 0.00031480226654821307
+Processed 850 batches, running loss: 0.00031549187669845514
+Processed 900 batches, running loss: 0.0003163353126728907
+Processed 950 batches, running loss: 0.00031453177508266987
+Processed 1000 batches, running loss: 0.0003143425898088026
+Processed 1050 batches, running loss: 0.0003154480808769308
+Processed 1100 batches, running loss: 0.0003168968074036953
+Processed 1150 batches, running loss: 0.0003161276287890201
+Processed 1200 batches, running loss: 0.00031534122632971654
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0003241076521226205
+Processed 100 batches, running loss: 0.000333497742540203
+Processed 150 batches, running loss: 0.000324321923496124
+Processed 200 batches, running loss: 0.0003253222467901651
+[main] COMPLETED epoch 18 of 25
+[main] TRAIN metrics: loss=0.000315, mse=0.000001, r2=0.969166, acc=0.999920, f1=0.942398, roc_auc=0.999993
+[main] VAL   metrics: loss=0.000325, mse=0.000001, r2=0.964289, acc=0.999937, f1=0.933068, roc_auc=0.999985
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 19 of 25
+Processed 50 batches, running loss: 0.00038827932672575116
+Processed 100 batches, running loss: 0.00037296939044608737
+Processed 150 batches, running loss: 0.0003422248818484756
+Processed 200 batches, running loss: 0.00036040441638760965
+Processed 250 batches, running loss: 0.00034633046507951803
+Processed 300 batches, running loss: 0.0003372047319135163
+Processed 350 batches, running loss: 0.00033088556914922916
+Processed 400 batches, running loss: 0.00033022696386979076
+Processed 450 batches, running loss: 0.00032809898735851876
+Processed 500 batches, running loss: 0.0003310223031294299
+Processed 550 batches, running loss: 0.00033131883007378996
+Processed 600 batches, running loss: 0.00032844146773034784
+Processed 650 batches, running loss: 0.0003279854281908438
+Processed 700 batches, running loss: 0.0003264228600684354
+Processed 750 batches, running loss: 0.00032403783221767905
+Processed 800 batches, running loss: 0.0003258896811712475
+Processed 850 batches, running loss: 0.00032382260778617553
+Processed 900 batches, running loss: 0.0003216526684263954
+Processed 950 batches, running loss: 0.0003189513365290814
+Processed 1000 batches, running loss: 0.00031818205001764
+Processed 1050 batches, running loss: 0.0003166282955291016
+Processed 1100 batches, running loss: 0.0003155395981527611
+Processed 1150 batches, running loss: 0.00031493325596903046
+Processed 1200 batches, running loss: 0.00031741003792073265
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0003114871597063029
+Processed 100 batches, running loss: 0.00032018130837968784
+Processed 150 batches, running loss: 0.00031399799731540647
+Processed 200 batches, running loss: 0.00031549650708257104
+[main] COMPLETED epoch 19 of 25
+[main] TRAIN metrics: loss=0.000316, mse=0.000001, r2=0.969127, acc=0.999920, f1=0.942407, roc_auc=0.999970
+[main] VAL   metrics: loss=0.000315, mse=0.000001, r2=0.965483, acc=0.999938, f1=0.934550, roc_auc=0.999992
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 20 of 25
+Processed 50 batches, running loss: 0.00031379459571326154
+Processed 100 batches, running loss: 0.0003063812149775913
+Processed 150 batches, running loss: 0.0003046688172131932
+Processed 200 batches, running loss: 0.00032451327013404807
+Processed 250 batches, running loss: 0.00031076049563125705
+Processed 300 batches, running loss: 0.0003061528146645287
+Processed 350 batches, running loss: 0.0003043171647420552
+Processed 400 batches, running loss: 0.00030330652351040043
+Processed 450 batches, running loss: 0.0002993460301756083
+Processed 500 batches, running loss: 0.0002970332166150911
+Processed 550 batches, running loss: 0.0002959335699217098
+Processed 600 batches, running loss: 0.0002969773401249161
+Processed 650 batches, running loss: 0.00029824551549749093
+Processed 700 batches, running loss: 0.00029609388840201844
+Processed 750 batches, running loss: 0.00029591151943895967
+Processed 800 batches, running loss: 0.00029591829167657124
+Processed 850 batches, running loss: 0.0002944174603394726
+Processed 900 batches, running loss: 0.0002949441256431682
+Processed 950 batches, running loss: 0.0002946313975706672
+Processed 1000 batches, running loss: 0.00029357512229762506
+Processed 1050 batches, running loss: 0.0002937552303289218
+Processed 1100 batches, running loss: 0.00029413162415783684
+Processed 1150 batches, running loss: 0.0002939585344321803
+Processed 1200 batches, running loss: 0.0002941575753781459
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0003106879835104337
+Processed 100 batches, running loss: 0.00032127302471053555
+Processed 150 batches, running loss: 0.000312676605899469
+Processed 200 batches, running loss: 0.00031426322957486266
+[main] COMPLETED epoch 20 of 25
+[main] TRAIN metrics: loss=0.000297, mse=0.000001, r2=0.970871, acc=0.999922, f1=0.943560, roc_auc=0.999842
+[main] VAL   metrics: loss=0.000314, mse=0.000001, r2=0.965606, acc=0.999938, f1=0.934792, roc_auc=0.999980
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 21 of 25
+Processed 50 batches, running loss: 0.00025535145483445375
+Processed 100 batches, running loss: 0.000270821410958888
+Processed 150 batches, running loss: 0.00027375392887430886
+Processed 200 batches, running loss: 0.00032758693723735635
+Processed 250 batches, running loss: 0.000345836737571517
+Processed 300 batches, running loss: 0.00034337168848045014
+Processed 350 batches, running loss: 0.0003406497572307541
+Processed 400 batches, running loss: 0.000335421024592506
+Processed 450 batches, running loss: 0.00033003103346951926
+Processed 500 batches, running loss: 0.00032751300086965784
+Processed 550 batches, running loss: 0.0003231255240494978
+Processed 600 batches, running loss: 0.00032029202113335485
+Processed 650 batches, running loss: 0.0003161559201991902
+Processed 700 batches, running loss: 0.00031570318201764685
+Processed 750 batches, running loss: 0.00031510379304139255
+Processed 800 batches, running loss: 0.00031383922128043197
+Processed 850 batches, running loss: 0.00031285853540312554
+Processed 900 batches, running loss: 0.00031120956316751995
+Processed 950 batches, running loss: 0.00030988116449933795
+Processed 1000 batches, running loss: 0.0003087004092376446
+Processed 1050 batches, running loss: 0.00030852711261970746
+Processed 1100 batches, running loss: 0.0003077830829914257
+Processed 1150 batches, running loss: 0.00030676999894279543
+Processed 1200 batches, running loss: 0.0003067196836279133
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0003063286322139902
+Processed 100 batches, running loss: 0.0003135658862811397
+Processed 150 batches, running loss: 0.0003043966435507173
+Processed 200 batches, running loss: 0.000306726182843704
+[main] COMPLETED epoch 21 of 25
+[main] TRAIN metrics: loss=0.000306, mse=0.000001, r2=0.970111, acc=0.999921, f1=0.942919, roc_auc=0.999998
+[main] VAL   metrics: loss=0.000306, mse=0.000001, r2=0.966450, acc=0.999938, f1=0.934448, roc_auc=0.999992
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 22 of 25
+Processed 50 batches, running loss: 0.0003418751247227192
+Processed 100 batches, running loss: 0.00031667955532611815
+Processed 150 batches, running loss: 0.0003002967398788314
+Processed 200 batches, running loss: 0.00028876881555333966
+Processed 250 batches, running loss: 0.0002818224683287554
+Processed 300 batches, running loss: 0.00027975730709537555
+Processed 350 batches, running loss: 0.0002805187786413756
+Processed 400 batches, running loss: 0.0002781057748325111
+Processed 450 batches, running loss: 0.0002828709712452514
+Processed 500 batches, running loss: 0.00029008386326313487
+Processed 550 batches, running loss: 0.00029043186552536846
+Processed 600 batches, running loss: 0.0003015118863307483
+Processed 650 batches, running loss: 0.00030272860570291344
+Processed 700 batches, running loss: 0.0003017217468628327
+Processed 750 batches, running loss: 0.00030377333424015283
+Processed 800 batches, running loss: 0.00030228777191041443
+Processed 850 batches, running loss: 0.0003002742795369533
+Processed 900 batches, running loss: 0.0002987152371173983
+Processed 950 batches, running loss: 0.00029725720321661545
+Processed 1000 batches, running loss: 0.0002964125649086782
+Processed 1050 batches, running loss: 0.0002970442989594414
+Processed 1100 batches, running loss: 0.00029743146736688106
+Processed 1150 batches, running loss: 0.00029676175401697905
+Processed 1200 batches, running loss: 0.00029619174184820923
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0003034376339201117
+Processed 100 batches, running loss: 0.0003107046918376
+Processed 150 batches, running loss: 0.0003015985235348732
+Processed 200 batches, running loss: 0.0003030226574810513
+[main] COMPLETED epoch 22 of 25
+[main] TRAIN metrics: loss=0.000296, mse=0.000001, r2=0.971065, acc=0.999922, f1=0.943809, roc_auc=0.999981
+[main] VAL   metrics: loss=0.000302, mse=0.000001, r2=0.966831, acc=0.999938, f1=0.934981, roc_auc=0.999989
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 23 of 25
+Processed 50 batches, running loss: 0.00030411782587179913
+Processed 100 batches, running loss: 0.0003057149750384269
+Processed 150 batches, running loss: 0.00029904596444490985
+Processed 200 batches, running loss: 0.0002923039096276625
+Processed 250 batches, running loss: 0.00029384516115533185
+Processed 300 batches, running loss: 0.000287748010547754
+Processed 350 batches, running loss: 0.00028489939161642855
+Processed 400 batches, running loss: 0.0002866715892923821
+Processed 450 batches, running loss: 0.0002914654556823532
+Processed 500 batches, running loss: 0.00028884677836322223
+Processed 550 batches, running loss: 0.00028564431446615016
+Processed 600 batches, running loss: 0.00028466857117261194
+Processed 650 batches, running loss: 0.0002855554588425618
+Processed 700 batches, running loss: 0.0002850345329040595
+Processed 750 batches, running loss: 0.00029319637367734684
+Processed 800 batches, running loss: 0.00029192672551289436
+Processed 850 batches, running loss: 0.0002920778386075707
+Processed 900 batches, running loss: 0.0002907298785834832
+Processed 950 batches, running loss: 0.00028986913968478083
+Processed 1000 batches, running loss: 0.0002890099247015314
+Processed 1050 batches, running loss: 0.00028978368606268697
+Processed 1100 batches, running loss: 0.0002904971467730568
+Processed 1150 batches, running loss: 0.0002898514514432147
+Processed 1200 batches, running loss: 0.0002900029584270669
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00030921864163246937
+Processed 100 batches, running loss: 0.000315859229376656
+Processed 150 batches, running loss: 0.00030490736831173613
+Processed 200 batches, running loss: 0.0003055886100628413
+[main] COMPLETED epoch 23 of 25
+[main] TRAIN metrics: loss=0.000289, mse=0.000001, r2=0.971743, acc=0.999922, f1=0.943854, roc_auc=0.999990
+[main] VAL   metrics: loss=0.000305, mse=0.000001, r2=0.966514, acc=0.999937, f1=0.932847, roc_auc=0.999991
+[main] Checkpoint saved
+
+[main] STARTING epoch 24 of 25
+Processed 50 batches, running loss: 0.00028497856939793567
+Processed 100 batches, running loss: 0.0002684910542302532
+Processed 150 batches, running loss: 0.0002637474645356027
+Processed 200 batches, running loss: 0.0002782074212882435
+Processed 250 batches, running loss: 0.00028183708013966677
+Processed 300 batches, running loss: 0.00028226196795003486
+Processed 350 batches, running loss: 0.0002826192940951192
+Processed 400 batches, running loss: 0.0002805024838016834
+Processed 450 batches, running loss: 0.00028350871049850765
+Processed 500 batches, running loss: 0.00028505629835126454
+Processed 550 batches, running loss: 0.0002844936288866765
+Processed 600 batches, running loss: 0.00028321022084128346
+Processed 650 batches, running loss: 0.0002823574027906244
+Processed 700 batches, running loss: 0.00028051280256477187
+Processed 750 batches, running loss: 0.0002793049356938961
+Processed 800 batches, running loss: 0.0002783077278490964
+Processed 850 batches, running loss: 0.00028409987727440346
+Processed 900 batches, running loss: 0.0002838820979781708
+Processed 950 batches, running loss: 0.00028268677995105175
+Processed 1000 batches, running loss: 0.00028196646550350123
+Processed 1050 batches, running loss: 0.00028302874045385535
+Processed 1100 batches, running loss: 0.0002828135781402869
+Processed 1150 batches, running loss: 0.00028142060610622613
+Processed 1200 batches, running loss: 0.0002807254818617366
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.0002969848610518966
+Processed 100 batches, running loss: 0.00030447409058979245
+Processed 150 batches, running loss: 0.000296494450061194
+Processed 200 batches, running loss: 0.0002975940000760602
+[main] COMPLETED epoch 24 of 25
+[main] TRAIN metrics: loss=0.000281, mse=0.000001, r2=0.972503, acc=0.999923, f1=0.944426, roc_auc=0.999993
+[main] VAL   metrics: loss=0.000297, mse=0.000001, r2=0.967402, acc=0.999939, f1=0.934964, roc_auc=0.999986
+[main] !! NEW BEST checkpoint !!: artifacts/train/best.pt
+[main] Checkpoint saved
+
+[main] STARTING epoch 25 of 25
+Processed 50 batches, running loss: 0.00027733849492506124
+Processed 100 batches, running loss: 0.00028180435729154853
+Processed 150 batches, running loss: 0.0002849827819348623
+Processed 200 batches, running loss: 0.00027776855822594373
+Processed 250 batches, running loss: 0.0002713073071790859
+Processed 300 batches, running loss: 0.0002690246136383697
+Processed 350 batches, running loss: 0.00027059656730021484
+Processed 400 batches, running loss: 0.0002682895523321349
+Processed 450 batches, running loss: 0.0002700509049625705
+Processed 500 batches, running loss: 0.00027013825201720464
+Processed 550 batches, running loss: 0.00027138154732793656
+Processed 600 batches, running loss: 0.00027066949326884544
+Processed 650 batches, running loss: 0.00027045864626416003
+Processed 700 batches, running loss: 0.0002794702486945815
+Processed 750 batches, running loss: 0.00027788610623489754
+Processed 800 batches, running loss: 0.0002767938108263479
+Processed 850 batches, running loss: 0.00027734476263182895
+Processed 900 batches, running loss: 0.00027734799976719335
+Processed 950 batches, running loss: 0.0002769531844196057
+Processed 1000 batches, running loss: 0.00027643208467634397
+Processed 1050 batches, running loss: 0.00027510727315703185
+Processed 1100 batches, running loss: 0.000278450410828968
+Processed 1150 batches, running loss: 0.0002778609444794711
+Processed 1200 batches, running loss: 0.000277353320519372
+/Users/skylar/Desktop/ML_denoise/src/4_train.py:231: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  return float(np.trapz(tpr, fpr))
+Processed 50 batches, running loss: 0.00030289201240520926
+Processed 100 batches, running loss: 0.00031164715474005786
+Processed 150 batches, running loss: 0.0002993676379749862
+Processed 200 batches, running loss: 0.0002985391322727082
+[main] COMPLETED epoch 25 of 25
+[main] TRAIN metrics: loss=0.000277, mse=0.000001, r2=0.972881, acc=0.999923, f1=0.944629, roc_auc=0.999982
+[main] VAL   metrics: loss=0.000298, mse=0.000001, r2=0.967298, acc=0.999938, f1=0.934510, roc_auc=0.999993
+[main] Checkpoint saved
+
+
+[main] Training complete. Best mse: 1.1449960700006588e-06 at epoch 24
+(base) skylar@Skybook-Pro ML_denoise % 
