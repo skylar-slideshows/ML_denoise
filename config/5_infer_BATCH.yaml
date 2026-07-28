@@ -1,0 +1,15 @@
+# CONFIG FILE FOR 5_infer.py
+
+# Required paths
+checkpoint: artifacts/train/best.pt
+input_folder: WAVs/noisy_testset_wav
+output_folder: WAVs/denoised
+
+# Audio + STFT params (MUST match training/encoding settings)
+target_sr: 16000
+n_fft: 512
+n_hop: 128
+win: hann
+
+# if output clips, normalize it so the largest sample is +/- 1
+normalize_output_peak: true
