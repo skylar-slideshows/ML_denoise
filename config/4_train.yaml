@@ -26,7 +26,7 @@ val_split: data/encode/split/val_files.txt
 out_dir: artifacts/train
 
 # Training params:
-epochs: 25
+epochs: 32
 batch_size: 8
 lr: 0.001
 weight_decay: 0.0
@@ -48,9 +48,9 @@ confusion_matrix:
 
 # Waveform metric params for PESQ/STOI/SI-SDR
 # These must match encoding/STFT settings.
-target_sr: 16000
-n_fft: 512
-n_hop: 128
+target_sr: 44100
+n_fft: 2048
+n_hop: 512
 win: hann
 
 # speech_metrics_split: none | train | val | both

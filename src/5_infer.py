@@ -4,16 +4,16 @@
 # Final Project - Speech Denoising with Neural Networks
 
 # Skylar Denno
-# July 27, 2026
+# July 26, 2026
 
-# 5_infer_BATCH.py
+# 5_infer.py
 
-# Run the trained LSTM denoiser on a set of noisy audio files (WAV) and produce denoised versions.
+# Run the trained LSTM denoiser on a noisy audio file (WAV) and produce a denoised version.
 
 ############################################################
 
 # USAGE:
-#    python src/5_infer_BATCH.py --input path/to/noisy/folder --output path/to/denoised/folder
+#    python src/5_infer.py --input path/to/noisy.wav --output path/to/denoised.wav
 
 ############################################################
 
@@ -41,10 +41,10 @@ def load_config(path):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Run speech denoising inference on a set of audio files")
+    parser = argparse.ArgumentParser(description="Run speech denoising inference on one audio file")
     parser.add_argument("--config", default=CONFIG_PATH, help="Path to inference config YAML")
-    parser.add_argument("--input", dest="input_wav", default=None, help="Input noisy WAV folder path")
-    parser.add_argument("--output", dest="output_wav", default=None, help="Output denoised WAV folder path")
+    parser.add_argument("--input", dest="input_wav", default=None, help="Input noisy WAV path")
+    parser.add_argument("--output", dest="output_wav", default=None, help="Output denoised WAV path")
     parser.add_argument("--checkpoint", default=None, help="Path to model checkpoint (.pt)")
     parser.add_argument(
         "--device",

@@ -8,7 +8,7 @@ noisy_in: data/preprocess/noisy_out
 cache_out: data/encode/cache
 
 # DSP and STFT params:
-target_sr: 16000 # target sample rate for the audio files 16kHz downsample (max audio freq = 8kHz)
-n_fft: 512 # number of samples for the STFT window
-n_hop: 128 # number of samples of overlap
+target_sr: 44100 # target sample rate for the audio files 16kHz downsample (max audio freq = 8kHz)
+n_fft: 2048 # number of samples for the STFT window
+n_hop: 512 # number of samples of overlap
 win: "hann" # DSP window type for the FFT
