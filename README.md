@@ -1,4 +1,4 @@
-####<u> FILE ORGANIZATION </u>
+## FILE ORGANIZATION
 
 The full training pipeline is organized into 4 files in src/
 
@@ -17,7 +17,7 @@ encode/split/val_files.txt]
 
 
 
-####<u> DATASET </u>
+## DATASET
 
 The dataset used for training is not included in the repository due to its size.
 
@@ -38,7 +38,7 @@ Also run mkdir data/preprocess and mkdir data/encode.
 
 
 
-####<u> CONFIGURATION </u>
+## CONFIGURATION
 
 Each python script has a corresponding config .yaml file in config/
 
@@ -71,7 +71,7 @@ and the current filename detection is based off the DataShare dataset's file nam
 
 
 
-####<u> USAGE </u>
+## USAGE
 
 From the project root directory:
 
@@ -92,11 +92,15 @@ OR, to run a full orchestration script that runs every script:
 
 
 
-####<u> USAGE (INFER SCRIPT) </u>
+## USAGE (INFER SCRIPT)
 
-To run the completed, trained model on any .wav audio file, (noisy speech recording),
+To run the completed, trained model on any .wav audio file, (noisy speech recording), run
 
-run 5_infer.py (python src/5_infer.py) or 5_infer_BATCH.py (python src/5_infer_BATCH.py).
+   &emsp;5_infer.py (python src/5_infer.py)
+
+   &emsp;OR
+
+   &emsp;5_infer_BATCH.py (python src/5_infer_BATCH.py)
 
 
 
@@ -141,9 +145,9 @@ even with the high quality 44.1kHz model.
 
 
 
-####<u> CREDIT </u>
+## CREDIT
 
-CODE: This project was developed by Skylar Denno
+**CODE:** This project was developed by Skylar Denno
 
 There are no other group members or collaborators.
 
@@ -151,7 +155,7 @@ All code written by Skylar Denno.
 
 
 
-LIBRARIES: The following Python libraries were used. They are in the standard Anaconda installation, and their respective licenses apply.
+**LIBRARIES:** The following Python libraries were used. They are in the standard Anaconda installation, and their respective licenses apply.
 
 PyTorch, SciPy, csv, soxr, soundfile, numpy, yaml, argparse, pathlib, itertools, shutil, random, os, sys
 
@@ -166,9 +170,9 @@ https://doi.org/10.7488/ds/2117
 
 
 
-####</u> LICENSE</u>
+## LICENSE
 
-This project is open source, under the ## MIT License:
+This project is open source, under the **MIT License**:
 
 
 Copyright 2026 Skylar Denno
