@@ -13,6 +13,8 @@
 \usepackage{hyperref}
 \usepackage{setspace}
 
+\usepackage{ragged2e}
+
 % --- Header/Footer Configuration ---
 \pagestyle{fancy}
 \fancyhf{} % Clear all default header and footer settings
@@ -26,7 +28,6 @@
 
 
 
-
 \begin{document}
 \begin{titlepage}
     \centering
@@ -34,11 +35,15 @@
     
     {\Huge \textbf{Speech Noise Reduction Using Long \\ \vspace{0.5cm}Short-Term Memory Neural Networks}} \\[1cm]
     
-    \vspace{4cm}
+    \vspace{7cm}
     
-    \textit{\textbf{Abstract:} }
     
-    \vspace{4cm}
+
+
+
+
+    
+    \vspace{1cm}
     {\Large \textbf{Skylar Denno}}
     
 
@@ -56,8 +61,14 @@
         \vspace{0.8cm}
         
         \textbf{GitHub:} \textit{https://github.com/skylar-slideshows/ML\_denoise}
+        \vspace{0.8cm}
+        
+        \justify
+            \textit{\textbf{Abstract:} This project presents the development of a Long Short-Term Memory (LSTM) neural network for speech denoising using the University of Edinburgh Noisy Speech Database. A complete machine learning pipeline was implemented, including data validation, feature extraction using the Short-Time Fourier Transform (STFT), supervised training, and hyperparameter tuning. The model predicts a spectral gain mask that is applied to noisy speech to estimate the corresponding clean speech. Experimental results show that the proposed approach effectively suppresses background noise while improving speech quality and intelligibility, with a bidirectional LSTM achieving the best overall performance.}
     
 \end{titlepage}
+
+\justify
 
 \section{Introduction}
 
@@ -287,7 +298,7 @@ Once the search process identifies the best-performing configuration, the model 
 
 \subsection{Results}
 
-The training was run locally, (on capable hardware), due to the need for convenient parameter editing, reruns, and the very large dataset. Training showed a characteristic quick improvement early on and gradual improvement in later epochs, with occasional epochs not performing better than the previous. All checkpoint files, from every epoch, were saved to the GitHub repository. Any epoch's model can be run on by editing the path in 5_infer.yaml or 5_infer_BATCH.yaml config files to point to the desired PyTorch .pt artifact file in the artifacts folder. The first few epochs produced very garbled, watery sounding audio which was completely unintelligible. In subsequent epochs, the audio became more intelligible, and all metrics (including the audio-specific ones) approached more ideal values. By the last ten epochs, the output audio was almost always more intelligible than the noisy input, and only subtle improvements were being made.
+The training was run locally, (on capable hardware), due to the need for convenient parameter editing, reruns, and the very large dataset. Training showed a characteristic quick improvement early on and gradual improvement in later epochs, with occasional epochs not performing better than the previous. All checkpoint files, from every epoch, were saved to the GitHub repository. Any epoch's model can be run on by editing the path in 5\_infer.yaml or 5\_infer\_BATCH.yaml config files to point to the desired PyTorch .pt artifact file in the artifacts folder. The first few epochs produced very garbled, watery sounding audio which was completely unintelligible. In subsequent epochs, the audio became more intelligible, and all metrics (including the audio-specific ones) approached more ideal values. By the last ten epochs, the output audio was almost always more intelligible than the noisy input, and only subtle improvements were being made.
 
 Both the 16kHz standard quality run and the 44.1kHz high quality run produced final models that performed very well with ROCAUC values >= 0.99995, MSE <= $10^{-6}$, and loss <= $4*10^{-4}$. Qualitatively, the output audio was very clear, and it was surprising how much detail in the voice recordings were revealed, that had been previously masked by noise, especially in the high-quality model.
 
@@ -322,6 +333,13 @@ All of the learning curves shown below are from the standard, 16kHz real-time ca
     \includegraphics[width=0.6\textwidth]{f1.png}
     \caption{F1 Score learning curve}
 \end{figure}
+
+The learning curves indicate that the model converged successfully during training. Both the training and validation loss decreased rapidly during the first several epochs before gradually approaching a stable value. A similar trend was observed for the Mean Squared Error (MSE), suggesting that the network quickly learned the dominant relationship between noisy and clean speech before making smaller refinements during later epochs. The close agreement between the training and validation curves also suggests that the model generalized well to previously unseen speakers and did not exhibit significant overfitting.
+
+The confusion matrices provide an additional diagnostic view of model performance. Since speech enhancement is fundamentally a regression problem rather than a classification problem, the continuous-valued spectral predictions were thresholded to produce binary classes for visualization. The matrices show that the vast majority of spectral bins were classified correctly, with very few false positives or false negatives. This agrees with the high ROC-AUC values observed during training and indicates that the predicted spectral gain masks closely matched the target masks.
+
+Comparing the two final models, the bidirectional LSTM produced slightly stronger objective performance and noticeably higher subjective audio quality than the unidirectional model. The additional future temporal context enabled the network to better distinguish speech components from background noise, producing smoother spectral masks and fewer reconstruction artifacts. However, this improvement comes at the expense of increased computational complexity and the inability to perform real-time causal inference, making the unidirectional model the more practical choice for live speech enhancement applications.
+
 
 Below are the confusion matrices of the best final epochs of each run. First, the high-quality 44.1kHz run, and then the 16kHz run.
 
@@ -387,6 +405,16 @@ The preprocessing and validation stage successfully ensured that only suitable t
 
 
 \section{Conclusion}
+
+This project successfully demonstrated the application of Long Short-Term Memory neural networks to the problem of speech enhancement. Beginning with paired clean and noisy recordings from the University of Edinburgh speech database, a complete end-to-end machine learning pipeline was developed to validate the data, extract spectral features, train an LSTM-based model, and reconstruct enhanced speech signals. The resulting models consistently reduced background noise while preserving the underlying speech, producing outputs that were both objectively and subjectively superior to the original noisy recordings.
+
+The training results showed stable convergence throughout the learning process, with decreasing validation loss and Mean Squared Error (MSE) indicating improved reconstruction accuracy on previously unseen speakers. Objective speech enhancement metrics further confirmed that the enhanced speech was more intelligible, exhibited higher perceptual quality, and more closely resembled the clean reference recordings. The comparison between the two training configurations also illustrated the practical trade-off between real-time performance and maximum reconstruction quality. The unidirectional LSTM provides a suitable solution for low-latency applications such as voice communications, while the bidirectional LSTM achieves higher quality by exploiting future temporal context for offline speech restoration.
+
+An important contribution of this work is the complete and reproducible software pipeline surrounding the neural network itself. Automated preprocessing, configurable validation, speaker-level dataset splitting, systematic hyperparameter tuning, and modular configuration files make the project straightforward to reproduce and extend. These supporting components improve the robustness of the overall system and simplify experimentation with alternative datasets and model architectures.
+
+\subsection{Future Work}
+
+Although the models produced strong results, several opportunities remain for future improvement. One promising direction is the use of \emph{complex spectral masks}, which estimate both magnitude and phase information rather than modifying only the magnitude spectrum. More accurate phase reconstruction has the potential to further improve speech quality and reduce reconstruction artifacts. Future work could also investigate more advanced recurrent architectures, including complex-valued recurrent neural networks and complex-valued LSTM models, which operate directly on complex STFT coefficients instead of treating the real and imaginary components independently. Finally, recent sequence modelling architectures such as attention mechanisms and Transformer-based networks could be evaluated and compared against the LSTM to determine whether they provide additional improvements in speech enhancement performance while maintaining acceptable computational requirements.
 
 
 	
