@@ -1,4 +1,4 @@
-#### FILE ORGANIZATION
+####<u> FILE ORGANIZATION </u>
 
 The full training pipeline is organized into 4 files in src/
 
@@ -17,7 +17,7 @@ encode/split/val_files.txt]
 
 
 
-#### DATASET
+####<u> DATASET </u>
 
 The dataset used for training is not included in the repository due to its size.
 
@@ -38,7 +38,7 @@ Also run mkdir data/preprocess and mkdir data/encode.
 
 
 
-#### CONFIGURATION
+####<u> CONFIGURATION </u>
 
 Each python script has a corresponding config .yaml file in config/
 
@@ -71,7 +71,7 @@ and the current filename detection is based off the DataShare dataset's file nam
 
 
 
-#### USAGE
+####<u> USAGE </u>
 
 From the project root directory:
 
@@ -87,12 +87,12 @@ From the project root directory:
 
 OR, to run a full orchestration script that runs every script:
 
-   python run.py
+   &emsp;python run.py
 
 
 
 
-#### USAGE (INFER SCRIPT)
+####<u> USAGE (INFER SCRIPT) </u>
 
 To run the completed, trained model on any .wav audio file, (noisy speech recording),
 
@@ -141,7 +141,7 @@ even with the high quality 44.1kHz model.
 
 
 
-#### CREDIT
+####<u> CREDIT </u>
 
 CODE: This project was developed by Skylar Denno
 
@@ -166,9 +166,9 @@ https://doi.org/10.7488/ds/2117
 
 
 
-#### LICENSE
+####</u> LICENSE</u>
 
-This project is open source, under the MIT License:
+This project is open source, under the ## MIT License:
 
 
 Copyright 2026 Skylar Denno
