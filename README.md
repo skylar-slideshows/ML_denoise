@@ -9,10 +9,8 @@ These are:
    &emsp;2_encode.py [Short-time Fourier transform (STFT) encoding and caching STFT arrays (see FINAL_REPORT.pdf, section 2.2)]
 
    &emsp;3_make_split.py [Separate (by speaker / at the speaker level, so no speaker is included in both the training and validation
-
-                    &emsp;&emsp;&emsp;&emsp;sets to avoid elevated validation scores). Creates data/encode/split/train_files.txt and Creates data/
-                    
-                    encode/split/val_files.txt]
+sets to avoid elevated validation scores). Creates data/encode/split/train_files.txt and Creates data/
+encode/split/val_files.txt]
 
    &emsp;4_train.py [Data load-in and LSTM training loop, organized by epochs and including hyperparameter tuning]
 
