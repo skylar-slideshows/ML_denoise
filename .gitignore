@@ -6,3 +6,5 @@ data/encode/*
 mlflow.db
 .vscode/
 .conda/
+~*
+__pycache__
