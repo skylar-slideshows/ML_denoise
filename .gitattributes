@@ -1,1 +1,2 @@
 *.tex linguist-vendored
+report/ linguist-vendored=false
