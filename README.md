@@ -1,9 +1,10 @@
 #### FILE ORGANIZATION
 The full training pipeline is organized into 4 files in src/
 These are:
-   1_preprocess.py []
-   2_encode.py []
-   3_make_split.py []
+   1_preprocess.py [Preprocessing / file validation (See FINAL_REPORT.pdf, section 2.1)]
+   2_encode.py [Short-time Fourier transform (STFT) encoding and caching STFT arrays (see FINAL_REPORT.pdf, section 2.2)]
+   3_make_split.py [Separate (by speaker / at the speaker level, so no speaker is included in both the training and validation
+                    sets to avoid elevated validation scores). Creates data/encode/split/train_files.txt and Creates data/encode/split/val_files.txt]
    4_train.py [Data load-in and LSTM training loop, organized by epochs and including hyperparameter tuning]
 
 
@@ -29,6 +30,10 @@ ALL training parameters (batch size, epochs, etc.) may be edited in 4_train.yaml
 
 The current config files are set up for a 44.1kHz sample rate (high-quality, bidirectional) training loop.
 If run as is, the result at epoch 32 will output files with the same denoising performance as the current ones in WAVs/ (not 16k)
+
+The random seed used in making the training/validation split is '42' by default. It may be changed in
+3_make_split.yaml. Files are split at the speaker level (the same speaker will not appear in both the training and validation data),
+and the current filename detection is based off the DataShare dataset's file naming conventions.
 
 
 #### USAGE
