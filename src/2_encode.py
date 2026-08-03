@@ -25,7 +25,6 @@
 ############################################################
 
 
-import mlflow
 import os
 import sys
 import numpy as np
@@ -34,7 +33,6 @@ import soundfile as sf
 import soxr
 from scipy.signal import stft as scipy_stft
 
-mlflow.set_tracking_uri("http://localhost:5000")
 
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(SCRIPT_DIR, "..", "config", "2_encode.yaml")
