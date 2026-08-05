@@ -4,7 +4,7 @@ data/encode/*
 .DS_Store
 **/.DS_Store
 mlflow.db
-.vscode/
-.conda/
+.vscode/*
+.conda/*
 ~*
 __pycache__
